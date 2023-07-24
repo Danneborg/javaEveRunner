@@ -1,25 +1,30 @@
 package root.test;
 
-import root.enums.Area;
+import root.enums.Constants;
 import root.enums.MouseButton;
 import root.enums.WindowName;
-import root.functions.Click;
-import root.functions.ComparePixels;
-import root.functions.DefineCoordinate;
-import root.functions.WindowActivate;
+import root.functions.*;
+import root.indicator.Coordinate;
+import root.indicator.Rectangle;
+import root.miner.Orca;
 
 import java.awt.*;
 
 public class FunctionsTest {
-    public static void main(String[] args) throws AWTException, InterruptedException {
+
+    public static void main(String[] args) throws AWTException {
         WindowActivate windowActivate = new WindowActivate();
         ComparePixels comparePixels = new ComparePixels();
         Robot robot = new Robot();
         Click click = new Click(robot);
+        KeyBoardPress keyBoardPress = new KeyBoardPress();
 
-        windowActivate.activateWindow(WindowName.TORWAK_MARTIN.getTitle());
-        Thread.sleep(500);
-//        System.out.println(comparePixels.comparePixels(IndicatorColour.GREEN_SPACE_CIRCLE));
+        Orca m = new Orca(WindowName.TORWAK_MARTIN, windowActivate, comparePixels, click, keyBoardPress);
+        m.actTest();
+//        windowActivate.activateWindow(WindowName.TORWAK_MARTIN.getTitle());
+//        warpOnBelt(2, click);
+//        Thread.sleep(500);
+//        System.out.println(comparePixels.isLocationPanelOpen());
 //        System.out.println(comparePixels.comparePixels(IndicatorColour.TOP_RIGHT_TARGETS_LOCK));
 //        Color color1 = new Color(IndicatorColour.GREEN_SPACE_CIRCLE.getColour());
 
@@ -76,6 +81,30 @@ public class FunctionsTest {
 //            System.out.println("+++++++++++++");
 //        }
 
-        click.doClick(MouseButton.RIGHT, DefineCoordinate.defineARowToClick(Area.OVERVIEW_FIRST_ROW, comparePixels.numberOfRowsCloserThan10km()));
+//        click.doClick(MouseButton.RIGHT, DefineCoordinate.defineARowToClick(Area.OVERVIEW_FIRST_ROW, comparePixels.numberOfRowsCloserThan10km()));
+//        System.out.println(comparePixels.isOnBelt());
+    }
+
+    public static void warpOnBelt(int currentBelt, Click click) {
+
+        var rectangleToWarp = Constants.LOCATION_PANEL_FIRST_BOOKMARK_COORDINATE;
+
+        int xRmcTop = rectangleToWarp.getTOP_LEFT_ANGLE().getPosX();
+        int xRmcBot = rectangleToWarp.getBOTTOM_RIGHT_ANGLE().getPosX();
+
+        int yRmcTop = rectangleToWarp.getTOP_LEFT_ANGLE().getPosY() + (currentBelt-1) * Constants.BOOK_PANEL_Y_AXIS_BIAS;
+        int yRmcBot = rectangleToWarp.getBOTTOM_RIGHT_ANGLE().getPosY() + (currentBelt-1) * Constants.BOOK_PANEL_Y_AXIS_BIAS;
+
+        var leftClickCoordinate = DefineCoordinate.defineCoordinate(new root.indicator.Rectangle(new Coordinate(xRmcTop, yRmcTop), new Coordinate(xRmcBot, yRmcBot)));
+
+        int xLmcTop = leftClickCoordinate.getPosX() + Constants.BOOK_PANEL_X_AXIS_MIN_BIAS_FOR_LEFT_CLICK;
+        int xLmcBot = DefineCoordinate.rnd(xLmcTop, xLmcTop + Constants.BOOK_PANEL_X_AXIS_MAX_BIAS_FOR_LEFT_CLICK);
+
+        int yLmcTop = leftClickCoordinate.getPosY() + Constants.BOOK_PANEL_Y_AXIS_MIN_BIAS_FOR_LEFT_CLICK;
+        int yLmcBot = DefineCoordinate.rnd(xLmcTop, yLmcTop + Constants.BOOK_PANEL_Y_AXIS_MAX_BIAS_FOR_LEFT_CLICK);
+
+        click.doClick(MouseButton.RIGHT, leftClickCoordinate, DefineCoordinate.rnd(1500, 1750));
+        Sleep.sleep(150,250);
+        click.doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(new Rectangle(new Coordinate(xLmcTop, yLmcTop), new Coordinate(xLmcBot, yLmcBot))), DefineCoordinate.rnd(200, 300));
     }
 }

@@ -151,4 +151,18 @@ public class ComparePixels {
                 && this.comparePixels(IndicatorColour.MINING_HOLD_ALMOST_FULL)
                 ;
     }
+
+    public boolean isOnBelt(){
+        return this.comparePixels(IndicatorColour.FIRST_ROW_ASTEROID_ICON_PIXEL)
+                && this.comparePixels(IndicatorColour.FIRST_ROW_WORD_SIZE_LETTER_m)
+                && this.comparePixels(IndicatorColour.FIRST_LETTER_M_IN_OVERVIEW)
+                ;
+    }
+
+    public boolean isLocationPanelOpen(){
+        return this.comparePixels(IndicatorColour.TOP_LEFT_LOCATIONS_LOCK)
+                && this.comparePixels(IndicatorColour.TOP_LEFT_MIDDLE_DOT_TOP_LOCATIONS)
+                && this.comparePixels(IndicatorColour.TOP_LEFT_GREEN_EYE_LOCATIONS)
+                ;
+    }
 }

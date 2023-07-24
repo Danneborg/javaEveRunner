@@ -6,4 +6,7 @@ public interface Mine {
 
     void act();
 
+    void setSleep(Long milSec);
+
+    void warpOnBelt() throws InterruptedException;
 }

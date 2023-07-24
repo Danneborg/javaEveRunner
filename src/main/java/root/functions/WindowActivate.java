@@ -22,6 +22,7 @@ public class WindowActivate {
                     System.out.printf("Активация окна - %s%n", windowHeader);
                     user32.ShowWindow(windowHandle, User32.SW_RESTORE);
                     user32.SetForegroundWindow(windowHandle);
+                    Sleep.sleep(100,200);
                 }
                 else {
                     System.out.printf("Окно уже активированно - %s%n", windowHeader);

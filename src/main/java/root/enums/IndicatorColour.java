@@ -11,6 +11,8 @@ public enum IndicatorColour {
     PLUS_MARK_NAV_PANEL(0xFFFFFF, 10, new Coordinate(1114, 833)),
 
     TOP_LEFT_LOCATIONS_LOCK(0xD7D7D7, 10, new Coordinate(312, 21)),//белый пиксель в икноке замка панели локаций
+    TOP_LEFT_MIDDLE_DOT_TOP_LOCATIONS(0xD6D6D6, 10, new Coordinate(287, 29)),//белый пиксель в средней точке троеточия панели закладок
+    TOP_LEFT_GREEN_EYE_LOCATIONS(0xA5D881, 10, new Coordinate(179, 141)),//зеленый пиксель в иконке глаза панели закладок
 
     //Пиксели для определения открыт ли ангар на станции
     ITEM_HANGAR_LOCK(0xD6D6D6, 10, new Coordinate(610, 13)),//белый пиксель в икноке замка вкладки ангара
@@ -37,6 +39,9 @@ public enum IndicatorColour {
     FIRST_LOCKED_TARGET_BRACKET_ACTIVE(0xFFFFFF, 12, new Coordinate(1145, 220)), //+19 по Y
     FIRST_LETTER_M_IN_OVERVIEW(0xE9EBEB, 10, new Coordinate(1281, 223)), //+19 по Y
     FIRST_LETTER_K_IN_OVERVIEW(0xE6E6E6, 10, new Coordinate(1271, 220)), //+19 по Y
+    FIRST_ROW_ASTEROID_ICON_PIXEL(0x494949, 10, new Coordinate(1152, 203)),
+    FIRST_ROW_WORD_SIZE_LETTER_m(0xE8E8E8, 10, new Coordinate(1473, 204)),
+
 
     //Пиксели в слове Warping
     WARP_DRIVE_WORD_LETTER_NAV_PANEL_W(0xE5E9EB, 10, new Coordinate(1052, 847)),

@@ -1,13 +1,31 @@
 package root.miner;
 
+import root.enums.Role;
 import root.enums.WindowName;
+import root.functions.Click;
 import root.functions.ComparePixels;
+import root.functions.KeyBoardPress;
 import root.functions.WindowActivate;
 
-public class SimpleMiner extends Miner{
+public class SimpleMiner extends Miner {
 
 
-    public SimpleMiner(WindowName windowName, WindowActivate windowActivate, ComparePixels comparePixels) {
-        super(windowName, windowActivate, comparePixels);
+    public SimpleMiner(WindowName windowName, WindowActivate windowActivate, ComparePixels comparePixels, Click click, KeyBoardPress keyBoardPress) {
+        super(windowName, windowActivate, comparePixels, click, Role.MINER, keyBoardPress);
+    }
+
+    @Override
+    public void activateWindow() {
+        getWindowActivate().activateWindow(this.getWindowName().getTitle());
+    }
+
+    @Override
+    public void act() {
+
+    }
+
+    @Override
+    public void collectState() {
+
     }
 }
