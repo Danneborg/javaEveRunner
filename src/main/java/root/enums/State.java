@@ -7,6 +7,8 @@ public enum State {
     IN_SPACE,
     IN_WARP,
     IN_STATION,
+    IN_STATION_UNLOADING,
+    UNDOCKING,
     UNKNOWN,
     ;
 

@@ -152,6 +152,13 @@ public class ComparePixels {
                 ;
     }
 
+    public boolean isExecumerMinigHoldEmpty(){
+        return this.isMiningHoldOpen()
+                && !this.comparePixels(IndicatorColour.MINING_HOLD_ALMOST_FULL)
+                && !this.comparePixels(IndicatorColour.MINING_HOLD_LESS_THAN_MIDDLE)
+                ;
+    }
+
     public boolean isOnBelt(){
         return this.comparePixels(IndicatorColour.FIRST_ROW_ASTEROID_ICON_PIXEL)
                 && this.comparePixels(IndicatorColour.FIRST_ROW_WORD_SIZE_LETTER_m)

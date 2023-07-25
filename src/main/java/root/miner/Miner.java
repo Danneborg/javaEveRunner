@@ -9,11 +9,12 @@ import root.indicator.Coordinate;
 import root.indicator.Rectangle;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-public abstract class Miner implements Mine {
+public abstract class Miner implements Mine{
 
     private final WindowName windowName;
     private final WindowActivate windowActivate;
@@ -64,8 +65,8 @@ public abstract class Miner implements Mine {
         int xRmcTop = rectangleToWarp.getTOP_LEFT_ANGLE().getPosX();
         int xRmcBot = rectangleToWarp.getBOTTOM_RIGHT_ANGLE().getPosX();
 
-        int yRmcTop = rectangleToWarp.getTOP_LEFT_ANGLE().getPosY() + (currentBelt-1) * Constants.BOOK_PANEL_Y_AXIS_BIAS;
-        int yRmcBot = rectangleToWarp.getBOTTOM_RIGHT_ANGLE().getPosY() + (currentBelt-1) * Constants.BOOK_PANEL_Y_AXIS_BIAS;
+        int yRmcTop = rectangleToWarp.getTOP_LEFT_ANGLE().getPosY() + (currentBelt - 1) * Constants.BOOK_PANEL_Y_AXIS_BIAS;
+        int yRmcBot = rectangleToWarp.getBOTTOM_RIGHT_ANGLE().getPosY() + (currentBelt - 1) * Constants.BOOK_PANEL_Y_AXIS_BIAS;
 
         var leftClickCoordinate = DefineCoordinate.defineCoordinate(new root.indicator.Rectangle(new Coordinate(xRmcTop, yRmcTop), new Coordinate(xRmcBot, yRmcBot)));
 
@@ -76,7 +77,7 @@ public abstract class Miner implements Mine {
         int yLmcBot = DefineCoordinate.rnd(xLmcTop, yLmcTop + Constants.BOOK_PANEL_Y_AXIS_MAX_BIAS_FOR_LEFT_CLICK);
 
         click.doClick(MouseButton.RIGHT, leftClickCoordinate, DefineCoordinate.rnd(1500, 1750));
-        Sleep.sleep(150,250);
+        Sleep.sleep(150, 250);
         click.doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(new Rectangle(new Coordinate(xLmcTop, yLmcTop), new Coordinate(xLmcBot, yLmcBot))), DefineCoordinate.rnd(200, 300));
 
     }
@@ -88,10 +89,28 @@ public abstract class Miner implements Mine {
         System.out.printf("isInInWarp - %s%n", this.isInInWarp());
         System.out.printf("isInInStation - %s%n", this.isInInStation());
         System.out.printf("isOreHoldOpen - %s%n", this.isOreHoldOpen());
+        System.out.printf("isItemHangarOpen - %s%n", this.isItemHangarOpen());
         System.out.printf("isOnBelt - %s%n", this.isOnBelt());
         System.out.printf("isLocationPanelOpen - %s%n", this.isLocationPanelOpen());
         System.out.printf("currentBelt - %s%n", this.getCurrentBelt());
         System.out.printf("globalBelt - %s%n", this.getGlobalBelt());
+        System.out.printf("execumerMiningHoldFull - %s%n", this.isOreHoldFull());
+        System.out.printf("execumerMiningHoldEmpty - %s%n", this.isOreHoldEmpty());
 
+
+    }
+
+    public boolean doOpenFolder(Supplier<Boolean> checker, Supplier<Void> keyPresser, String title) {
+        //TODO вынести число попыток в константу, по возможности уточнить количество
+        for (int i = 0; i < 4; i++) {
+
+            if (checker.get()) {
+                return true;
+            }
+            keyPresser.get();
+        }
+
+        System.out.printf("Не удалось выполнить действие по открытию окна : %s%n", title);
+        return false;
     }
 }
