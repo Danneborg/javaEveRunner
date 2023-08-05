@@ -16,6 +16,7 @@ public class ComparePixels {
     private final int Y_POS_COUNT_ROWS_OVERVIEW = IndicatorColour.FIRST_LETTER_M_IN_OVERVIEW.getCoordinate().getPosY();
     private final Color STANDARD_M_OVERVIEW = new Color(IndicatorColour.FIRST_LETTER_M_IN_OVERVIEW.getColour());
     private final Color STANDARD_K_OVERVIEW = new Color(IndicatorColour.FIRST_LETTER_K_IN_OVERVIEW.getColour());
+    private final Color MINING_HOLD_FIRST_ROW_t = new Color(IndicatorColour.MINING_HOLD_FIRST_ROW_t.getColour());
 
     public ComparePixels() throws AWTException {
         robot = new Robot();
@@ -66,15 +67,30 @@ public class ComparePixels {
             System.out.println(notActiveSample);
             System.out.println(activeSample);
             System.out.println(localYpos);
-            System.out.println("++++++++++++++++++++");
-//            if (comparePixels(NOT_ACTIVE_STANDARD_LOCK_TARGET, notActiveSample, IndicatorColour.FIRST_LOCKED_TARGET_BRACKET_NOT_ACTIVE.getShadeDeviation())
-//                    || comparePixels(ACTIVE_STANDARD_LOCK_TARGET, activeSample, IndicatorColour.FIRST_LOCKED_TARGET_BRACKET_ACTIVE.getShadeDeviation())) {
-//                lockedTargets++;
-//            }
             localYpos += Constants.OVERVIEW_Y_AXIS_BIAS;
         }
 
         return lockedTargets;
+    }
+
+    public int numberRowsInMiningHold() {
+
+        var numberOfRows = 0;
+        var localYPos = IndicatorColour.MINING_HOLD_FIRST_ROW_t.getCoordinate().getPosY();
+
+        for (int i = 0; i < 5; i++) {
+
+            var rowExists = robot.getPixelColor(IndicatorColour.MINING_HOLD_FIRST_ROW_t.getCoordinate().getPosX(), localYPos);
+
+            if (comparePixels(MINING_HOLD_FIRST_ROW_t, rowExists, IndicatorColour.FIRST_LETTER_M_IN_OVERVIEW.getShadeDeviation())) {
+                numberOfRows++;
+                localYPos += Constants.EXECUMER_MINING_HOLD_FIRST_ROW_t_Y_ASIS_BIAS;
+            }else {
+                break;
+            }
+        }
+
+        return numberOfRows;
     }
 
     public int numberOfRowsCloserThan10km() {
@@ -148,14 +164,14 @@ public class ComparePixels {
 
     public boolean isExecumerMinigHoldAlmostFull(){
         return this.isMiningHoldOpen()
-                && this.comparePixels(IndicatorColour.MINING_HOLD_ALMOST_FULL)
+                && !this.comparePixels(IndicatorColour.MINING_HOLD_ALMOST_FULL)
                 ;
     }
 
     public boolean isExecumerMinigHoldEmpty(){
         return this.isMiningHoldOpen()
-                && !this.comparePixels(IndicatorColour.MINING_HOLD_ALMOST_FULL)
-                && !this.comparePixels(IndicatorColour.MINING_HOLD_LESS_THAN_MIDDLE)
+                && this.comparePixels(IndicatorColour.MINING_HOLD_ALMOST_FULL)
+                && this.comparePixels(IndicatorColour.MINING_HOLD_LESS_THAN_MIDDLE)
                 ;
     }
 
@@ -170,6 +186,11 @@ public class ComparePixels {
         return this.comparePixels(IndicatorColour.TOP_LEFT_LOCATIONS_LOCK)
                 && this.comparePixels(IndicatorColour.TOP_LEFT_MIDDLE_DOT_TOP_LOCATIONS)
                 && this.comparePixels(IndicatorColour.TOP_LEFT_GREEN_EYE_LOCATIONS)
+                ;
+    }
+
+    public boolean doesOreRowExist(){
+        return this.comparePixels(IndicatorColour.MINING_HOLD_FIRST_ROW_t)
                 ;
     }
 }

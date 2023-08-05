@@ -42,12 +42,8 @@ public class Click {
             robot.mouseMove(moveX, moveY);
 
             // Pause between each step
-            robot.delay(10);
+            robot.delay(DefineCoordinate.rnd(8,15));
         }
-
-        // Optionally, perform a mouse click at the final position
-        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
     }
 
     public void mouseMove(int destinationX, int destinationY) {
@@ -96,6 +92,18 @@ public class Click {
                 Sleep.sleep(14, 35);
                 break;
         }
+
+    }
+
+    public void doDragAndDrop(Coordinate from, Coordinate to, int speed) {
+
+        this.moveMouse(from.getPosX(), from.getPosY(), speed);
+        robot.delay(DefineCoordinate.rnd(34,54)); // 1000 milliseconds = 1 second
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        robot.delay(DefineCoordinate.rnd(34,54)); // 1000 milliseconds = 1 second
+        this.moveMouse(to.getPosX(), to.getPosY(), speed);
+        robot.delay(DefineCoordinate.rnd(34,54)); // 1000 milliseconds = 1 second
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
 
     }
 

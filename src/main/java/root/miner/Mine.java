@@ -9,4 +9,6 @@ public interface Mine {
     void setSleep(Long milSec);
 
     void warpOnBelt() throws InterruptedException;
+
+    void unloadExecumerMinigHold() throws InterruptedException;
 }

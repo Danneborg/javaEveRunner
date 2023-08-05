@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-public abstract class Miner implements Mine{
+public abstract class Miner implements Mine {
 
     private final WindowName windowName;
     private final WindowActivate windowActivate;
@@ -80,6 +80,34 @@ public abstract class Miner implements Mine{
         Sleep.sleep(150, 250);
         click.doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(new Rectangle(new Coordinate(xLmcTop, yLmcTop), new Coordinate(xLmcBot, yLmcBot))), DefineCoordinate.rnd(200, 300));
 
+    }
+
+    @Override
+    public void unloadExecumerMinigHold() {
+
+        var countRows = comparePixels.numberRowsInMiningHold();
+
+        if (countRows == 1) {
+            click.doDragAndDrop(DefineCoordinate.defineCoordinate(Constants.FIRS_ROW_EXECUMER_MINING_HOLD), DefineCoordinate.defineCoordinate(Constants.ITEM_HANGAR_DROP), DefineCoordinate.rnd(800, 1000));
+        } else {
+            var rectangleRMBClick = DefineCoordinate.defineCoordinate(Constants.FIRS_ROW_EXECUMER_MINING_HOLD);
+            click.doClick(MouseButton.RIGHT, rectangleRMBClick, DefineCoordinate.rnd(1500, 1750));
+            Sleep.sleep(300, 500);
+            var lcmX = rectangleRMBClick.getPosX() + DefineCoordinate.rnd(Constants.EXECUMER_MINING_HOLD_SELECT_ALL_X_ASIS_MIN_BIAS, Constants.EXECUMER_MINING_HOLD_SELECT_ALL_X_ASIS_MAX_BIAS);
+            var lcmY = rectangleRMBClick.getPosY() + DefineCoordinate.rnd(Constants.EXECUMER_MINING_HOLD_SELECT_ALL_Y_ASIS_MIN_BIAS, Constants.EXECUMER_MINING_HOLD_SELECT_ALL_Y_ASIS_MAX_BIAS);
+            var lcmCoordinate = new Coordinate(lcmX, lcmY);
+            click.doClick(MouseButton.LEFT, lcmCoordinate, DefineCoordinate.rnd(1500, 1750));
+            Sleep.sleep(300, 500);
+
+            var dragAndDropFrom = DefineCoordinate.defineCoordinate(Constants.FIRS_ROW_EXECUMER_MINING_HOLD);
+
+            var posYCompensation = Constants.FIRS_ROW_EXECUMER_MINING_HOLD.getTOP_LEFT_ANGLE().getPosY() - dragAndDropFrom.getPosY();
+
+            var yBias = DefineCoordinate.rnd(dragAndDropFrom.getPosY(), (dragAndDropFrom.getPosY() - posYCompensation) + Constants.EXECUMER_MINING_HOLD_FIRST_ROW_t_Y_ASIS_BIAS * (countRows - 1));
+
+            click.doDragAndDrop(new Coordinate(dragAndDropFrom.getPosX(), yBias), DefineCoordinate.defineCoordinate(Constants.ITEM_HANGAR_DROP), DefineCoordinate.rnd(800, 1000));
+
+        }
     }
 
     public void printState() {

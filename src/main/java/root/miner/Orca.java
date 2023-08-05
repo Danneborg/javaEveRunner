@@ -97,11 +97,9 @@ public class Orca extends Miner implements Mine {
                 return;
             }
 
-            if (isOreHoldFull()) {
+            if (isOreHoldFull() || !isOreHoldEmpty()) {
                 setState(State.IN_STATION_UNLOADING);
-
-                //TODO добавить команду разгрузки
-
+                unloadExecumerMinigHold();
             }
 
         }

@@ -23,11 +23,12 @@ public enum IndicatorColour {
     MINING_HOLD_LOCK(0xD6D6D6, 10, new Coordinate(610, 508)),//белый пиксель в икноке замка вкладки руды
     MINING_HOLD_FIRST_LETTER_i(0xE6E6E6, 10, new Coordinate(396, 508)),//белый в первой букве i вкладки руды
     MINING_HOLD_FIRST_LETTER_d(0xDFDFDF, 10, new Coordinate(445, 508)),//белый букве d вкладки руды
+    MINING_HOLD_FIRST_ROW_t(0xC5C5C5, 10, new Coordinate(622, 574)),//белый пиксель букве t в слове Asteroid в строке с рудой, нужен для подсчета зоны куда сделать клик при перетаскивании руды
 
     //Пиксели для определения заполненности ангара руды на экзекюмере
-    MINING_HOLD_LESS_THAN_MIDDLE(0x233A43, 10, new Coordinate(402, 530)),//темно-голубой пиксель в полоске заполненности руды
-    MINING_HOLD_LESS_AROUND_MIDDLE(0x233A43, 10, new Coordinate(502, 530)),//темно-голубой пиксель в полоске заполненности руды
-    MINING_HOLD_ALMOST_FULL(0x233A43, 10, new Coordinate(657, 530)),//темно-голубой пиксель в полоске заполненности руды
+    MINING_HOLD_LESS_THAN_MIDDLE(0x0E0E0E, 10, new Coordinate(402, 530)),//черный пиксель в полоске заполненности руды
+    MINING_HOLD_LESS_AROUND_MIDDLE(0x0E0E0E, 10, new Coordinate(502, 530)),//черный пиксель в полоске заполненности руды
+    MINING_HOLD_ALMOST_FULL(0x0E0E0E, 10, new Coordinate(657, 530)),//черный пиксель в полоске заполненности руды
 
     DRONE_HOLD_LOCK(0xE3E3E3, 10, new Coordinate(1558, 583)),//белый пиксель в икноке замка вкладки дронов
 

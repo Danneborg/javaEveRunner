@@ -7,6 +7,7 @@ import root.indicator.Rectangle;
 
 public class DefineCoordinate {
 
+    //TODO вынести этот рандомизатор куда то еще
     public static int rnd(int min, int max) {
         max -= min;
         return (int) (Math.random() * ++max) + min;

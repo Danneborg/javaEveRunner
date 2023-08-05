@@ -22,6 +22,7 @@ public class FunctionsTest {
         Orca m = new Orca(WindowName.TORWAK_MARTIN, windowActivate, comparePixels, click, keyBoardPress);
         m.actTest();
 //        windowActivate.activateWindow(WindowName.TORWAK_MARTIN.getTitle());
+//        m.unloadExecumerMinigHold();
 //        warpOnBelt(2, click);
 //        Thread.sleep(500);
 //        System.out.println(comparePixels.isLocationPanelOpen());
