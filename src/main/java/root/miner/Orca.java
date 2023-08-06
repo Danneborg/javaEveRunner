@@ -46,6 +46,7 @@ public class Orca extends Miner implements Mine {
                 printState();
             }
 
+            //TODO добавить опрос всех майнеров на предмет статуса и последующей раздачей команд каждому окну
             for (var singleMiner : minerList) {
                 singleMiner.act();
             }
@@ -124,6 +125,8 @@ public class Orca extends Miner implements Mine {
         if (isInSpace() && isOnBelt()) {
 
             setState(State.ON_BELT);
+
+            //TODO добавить логику реварпа на другой белт, если общее количество целей для лока меньше 2
 
             if (isOreHoldFull()) {
 

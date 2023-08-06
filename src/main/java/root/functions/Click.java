@@ -76,7 +76,6 @@ public class Click {
 
     public void doClick(MouseButton mouseButton, Coordinate coordinate, int speed) {
 
-//        this.mouseMove(coordinate.getPosX(), coordinate.getPosY());
         this.moveMouse(coordinate.getPosX(), coordinate.getPosY(), speed);
         switch (mouseButton) {
             case LEFT:

@@ -108,19 +108,13 @@ public abstract class Miner implements Mine {
 
     private void lockTarget(int numberOfAvailableTargets, int numberTargetsToLock) {
 
-        List<Integer> availableTargetRows = new ArrayList<>();
         List<Integer> rowsToClick = new ArrayList<>();
-        for (int i = 0; i <= numberOfAvailableTargets; i++) {
-            availableTargetRows.add(i);
-        }
 
         while (rowsToClick.size() < numberTargetsToLock) {
-            int randomIndex = DefineCoordinate.rnd(0, availableTargetRows.size() - 1);
-            int randomNumber = availableTargetRows.get(randomIndex);
+            int randomIndex = DefineCoordinate.rnd(0, numberOfAvailableTargets);
 
-            if (!rowsToClick.contains(randomNumber)) {
-                rowsToClick.add(randomNumber);
-                availableTargetRows.remove(randomIndex);
+            if (!rowsToClick.contains(randomIndex)) {
+                rowsToClick.add(randomIndex);
             }
         }
 
@@ -135,18 +129,29 @@ public abstract class Miner implements Mine {
 
     }
 
+    private void align(){
+        keyBoardPress.pressKeyWithoutRelease(KeyEvent.VK_Q);
+        click.doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(Area.OVERVIEW_FIRST_ROW.getRectangle()), DefineCoordinate.rnd(900, 1200));
+        Sleep.sleep(200, 400);
+        keyBoardPress.keyRelease(KeyEvent.VK_CONTROL);
+    }
+
     @Override
     public void mine() {
 
         setLockedTargets(comparePixels.numberOfLockedTargetsWithCoordinates());
 
-        if (getLockedTargets().size() < 1) {
+        var availableTargetsCloser10km = comparePixels.numberOfRowsCloserThan10km();
 
-            lockTarget(comparePixels.numberOfRowsCloserThan10km(), 4);
-
+        if(availableTargetsCloser10km < 2){
+            align();
         }
 
-        //TODO Добавить логику долочивания целей, если в локе всего 1 цель
+        var lockedTargets = comparePixels.numberOfLockedTargets();
+        if (lockedTargets < 2) {
+            lockTarget(availableTargetsCloser10km, 4 - lockedTargets);
+        }
+
 
         if (getState() != State.MINING_STRIP_ACTIVATED) {
 
