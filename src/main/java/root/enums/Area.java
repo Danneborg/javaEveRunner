@@ -12,6 +12,7 @@ public enum Area {
     OVERVIEW_FIRST_ROW(new Rectangle(new Coordinate(1153, 216), new Coordinate(1519, 231))),
     FIRS_ROW_EXECUMER_MINING_HOLD(new Rectangle(new Coordinate(450, 570), new Coordinate(600, 580))),
     ITEM_HANGAR_DROP(new Rectangle(new Coordinate(400, 90), new Coordinate(600, 370))),
+    UNDOCK_BUTTON(new Rectangle(new Coordinate(1350, 280), new Coordinate(1560, 300))),
     ;
 
     private final Rectangle rectangle;

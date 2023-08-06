@@ -8,6 +8,8 @@ import root.functions.*;
 import root.indicator.Coordinate;
 import root.indicator.Rectangle;
 
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -79,7 +81,93 @@ public abstract class Miner implements Mine {
         click.doClick(MouseButton.RIGHT, leftClickCoordinate, DefineCoordinate.rnd(1500, 1750));
         Sleep.sleep(150, 250);
         click.doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(new Rectangle(new Coordinate(xLmcTop, yLmcTop), new Coordinate(xLmcBot, yLmcBot))), DefineCoordinate.rnd(200, 300));
+        setState(State.IN_WARP);
+    }
 
+    private void activateStripMiners() {
+        //TODO вынести это в константы, уточнить количество попыток
+        for (int i = 0; i < 5; i++) {
+
+            if (!isFirstMinerActive()) {
+                keyBoardPress.pressKey(KeyEvent.VK_F1);
+            }
+
+            if (!isSecondMinerActive()) {
+                keyBoardPress.pressKey(KeyEvent.VK_F2);
+            }
+
+            Sleep.sleep(400, 600);
+            setFirstMinerActive(getComparePixels().checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_1));
+            setSecondMinerActive(getComparePixels().checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_2));
+
+            if (isFirstMinerActive() && isSecondMinerActive()) {
+                return;
+            }
+        }
+    }
+
+    private void lockTarget(int numberOfAvailableTargets, int numberTargetsToLock) {
+
+        List<Integer> availableTargetRows = new ArrayList<>();
+        List<Integer> rowsToClick = new ArrayList<>();
+        for (int i = 0; i <= numberOfAvailableTargets; i++) {
+            availableTargetRows.add(i);
+        }
+
+        while (rowsToClick.size() < numberTargetsToLock) {
+            int randomIndex = DefineCoordinate.rnd(0, availableTargetRows.size() - 1);
+            int randomNumber = availableTargetRows.get(randomIndex);
+
+            if (!rowsToClick.contains(randomNumber)) {
+                rowsToClick.add(randomNumber);
+                availableTargetRows.remove(randomIndex);
+            }
+        }
+
+        System.out.println(rowsToClick);
+        keyBoardPress.pressKeyWithoutRelease(KeyEvent.VK_CONTROL);
+        for (int i = 0; i < numberTargetsToLock; i++) {
+            var clickPos = DefineCoordinate.defineCoordinate(Area.OVERVIEW_FIRST_ROW, 0, Constants.OVERVIEW_Y_AXIS_BIAS * rowsToClick.get(i));
+            click.doClick(MouseButton.LEFT, clickPos, DefineCoordinate.rnd(900, 1200));
+            Sleep.sleep(200, 400);
+        }
+        keyBoardPress.keyRelease(KeyEvent.VK_CONTROL);
+
+    }
+
+    @Override
+    public void mine() {
+
+        setLockedTargets(comparePixels.numberOfLockedTargetsWithCoordinates());
+
+        if (getLockedTargets().size() < 1) {
+
+            lockTarget(comparePixels.numberOfRowsCloserThan10km(), 4);
+
+        }
+
+        //TODO Добавить логику долочивания целей, если в локе всего 1 цель
+
+        if (getState() != State.MINING_STRIP_ACTIVATED) {
+
+            if (!isFirstMinerActive() || !isSecondMinerActive()) {
+
+                activateStripMiners();
+
+            }
+
+        } else {
+            //TODO добавить функцию реактивации стрипов
+        }
+
+        setAwakeMoment(35000L);
+    }
+
+    @Override
+    public void doUndock() {
+        var clickPos = DefineCoordinate.defineCoordinate(Area.UNDOCK_BUTTON.getRectangle());
+        click.doClick(MouseButton.LEFT, clickPos, DefineCoordinate.rnd(1500, 1750));
+        Sleep.sleep(150, 250);
     }
 
     @Override
@@ -108,10 +196,12 @@ public abstract class Miner implements Mine {
             click.doDragAndDrop(new Coordinate(dragAndDropFrom.getPosX(), yBias), DefineCoordinate.defineCoordinate(Constants.ITEM_HANGAR_DROP), DefineCoordinate.rnd(800, 1000));
 
         }
+        Sleep.sleep(800, 1200);
     }
 
     public void printState() {
 
+        System.out.println("===============================");
         System.out.printf("Статус - %s%n", this.getState());
         System.out.printf("isInSpace - %s%n", this.isInSpace());
         System.out.printf("isInInWarp - %s%n", this.isInInWarp());
@@ -124,7 +214,7 @@ public abstract class Miner implements Mine {
         System.out.printf("globalBelt - %s%n", this.getGlobalBelt());
         System.out.printf("execumerMiningHoldFull - %s%n", this.isOreHoldFull());
         System.out.printf("execumerMiningHoldEmpty - %s%n", this.isOreHoldEmpty());
-
+        System.out.println("===============================");
 
     }
 

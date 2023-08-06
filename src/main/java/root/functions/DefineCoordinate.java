@@ -13,6 +13,22 @@ public class DefineCoordinate {
         return (int) (Math.random() * ++max) + min;
     }
 
+    public static Rectangle defineRectangleToClick(Area area, int numberOfAvailableTargets) {
+
+        int XMin = area.getRectangle().getTOP_LEFT_ANGLE().getPosX(); // Минимальное число для диапазона
+        int XMax = area.getRectangle().getBOTTOM_RIGHT_ANGLE().getPosX(); // Максимальное число для диапазона
+
+        int YMin = area.getRectangle().getTOP_LEFT_ANGLE().getPosY(); // Минимальное число для диапазона
+        int YMax;
+        if (numberOfAvailableTargets == 1) {
+            YMax = area.getRectangle().getTOP_LEFT_ANGLE().getPosY() + Constants.OVERVIEW_Y_AXIS_BIAS; // Максимальное число для диапазона
+        } else {
+            YMax = area.getRectangle().getTOP_LEFT_ANGLE().getPosY() + Constants.OVERVIEW_Y_AXIS_BIAS * rnd(1, numberOfAvailableTargets); // Максимальное число для диапазона
+        }
+
+        return new Rectangle(new Coordinate(XMin, YMin), new Coordinate(XMax, YMax));
+    }
+
     public static Coordinate defineARowToClick(Area area, int numberOfAvailableTargets) {
 
         int XMin = area.getRectangle().getTOP_LEFT_ANGLE().getPosX(); // Минимальное число для диапазона
@@ -23,7 +39,7 @@ public class DefineCoordinate {
         if (numberOfAvailableTargets == 1) {
             YMax = area.getRectangle().getTOP_LEFT_ANGLE().getPosY() + Constants.OVERVIEW_Y_AXIS_BIAS; // Максимальное число для диапазона
         } else {
-            YMax = area.getRectangle().getTOP_LEFT_ANGLE().getPosY() + Constants.OVERVIEW_Y_AXIS_BIAS*rnd(1, numberOfAvailableTargets); // Максимальное число для диапазона
+            YMax = area.getRectangle().getTOP_LEFT_ANGLE().getPosY() + Constants.OVERVIEW_Y_AXIS_BIAS * rnd(1, numberOfAvailableTargets); // Максимальное число для диапазона
         }
 
         return new Coordinate(rnd(XMin, XMax), rnd(YMin, YMax));
@@ -43,7 +59,8 @@ public class DefineCoordinate {
     public static Coordinate defineCoordinate(Rectangle rectangle) {
 
         int XMin = rectangle.getTOP_LEFT_ANGLE().getPosX(); // Минимальное число для диапазона
-        int XMax = rectangle.getBOTTOM_RIGHT_ANGLE().getPosX();; // Максимальное число для диапазона
+        int XMax = rectangle.getBOTTOM_RIGHT_ANGLE().getPosX();
+        ; // Максимальное число для диапазона
 
         int YMin = rectangle.getTOP_LEFT_ANGLE().getPosY(); // Минимальное число для диапазона
         int YMax = rectangle.getBOTTOM_RIGHT_ANGLE().getPosY(); // Максимальное число для диапазона

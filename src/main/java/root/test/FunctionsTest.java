@@ -1,6 +1,7 @@
 package root.test;
 
 import root.enums.Constants;
+import root.enums.IndicatorColour;
 import root.enums.MouseButton;
 import root.enums.WindowName;
 import root.functions.*;
@@ -22,6 +23,10 @@ public class FunctionsTest {
         Orca m = new Orca(WindowName.TORWAK_MARTIN, windowActivate, comparePixels, click, keyBoardPress);
         m.actTest();
 //        windowActivate.activateWindow(WindowName.TORWAK_MARTIN.getTitle());
+//        while (true){
+//            System.out.println(comparePixels.checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_1));
+//            System.out.println(comparePixels.checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_2));
+//        }
 //        m.unloadExecumerMinigHold();
 //        warpOnBelt(2, click);
 //        Thread.sleep(500);

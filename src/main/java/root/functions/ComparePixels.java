@@ -2,8 +2,10 @@ package root.functions;
 
 import root.enums.Constants;
 import root.enums.IndicatorColour;
+import root.indicator.Coordinate;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ComparePixels {
 
@@ -36,6 +38,26 @@ public class ComparePixels {
                 && bDiff <= indicatorColour.getShadeDeviation();
     }
 
+    public java.util.List<Coordinate> numberOfLockedTargetsWithCoordinates() {
+
+        java.util.List<Coordinate> coordinates = new ArrayList<>();
+        var localYpos = Y_POS_LOCK_TARGET;
+        for (int i = 0; i < Constants.NUMBER_OF_OVERVIEW_ROWS; i++) {
+
+            var notActiveSample = robot.getPixelColor(IndicatorColour.FIRST_LOCKED_TARGET_BRACKET_NOT_ACTIVE.getCoordinate().getPosX(), localYpos);
+            var activeSample = robot.getPixelColor(IndicatorColour.FIRST_LOCKED_TARGET_BRACKET_ACTIVE.getCoordinate().getPosX(), localYpos);
+
+            if (comparePixels(NOT_ACTIVE_STANDARD_LOCK_TARGET, notActiveSample, IndicatorColour.FIRST_LOCKED_TARGET_BRACKET_NOT_ACTIVE.getShadeDeviation())
+                    || comparePixels(ACTIVE_STANDARD_LOCK_TARGET, activeSample, IndicatorColour.FIRST_LOCKED_TARGET_BRACKET_ACTIVE.getShadeDeviation())) {
+
+                coordinates.add(new Coordinate(IndicatorColour.FIRST_LOCKED_TARGET_BRACKET_NOT_ACTIVE.getCoordinate().getPosX(), localYpos));
+            }
+            localYpos += Constants.OVERVIEW_Y_AXIS_BIAS;
+        }
+
+        return coordinates;
+    }
+
     //TODO подумать как можно унифицировать метод передавай X и Y координаты
     //TODO возможно, нужно сделать метод, который возвращает координаты залоченных целей, чтобы рандомно их них выбирать одну
     public int numberOfLockedTargets() {
@@ -57,22 +79,6 @@ public class ComparePixels {
         return lockedTargets;
     }
 
-    public int numberOfLockedTargetsTest() {
-
-        var lockedTargets = 0;
-        var localYpos = Y_POS_LOCK_TARGET;
-        for (int i = 0; i < 5; i++) {
-            var notActiveSample = robot.getPixelColor(IndicatorColour.FIRST_LOCKED_TARGET_BRACKET_NOT_ACTIVE.getCoordinate().getPosX(), localYpos);
-            var activeSample = robot.getPixelColor(IndicatorColour.FIRST_LOCKED_TARGET_BRACKET_ACTIVE.getCoordinate().getPosX(), localYpos);
-            System.out.println(notActiveSample);
-            System.out.println(activeSample);
-            System.out.println(localYpos);
-            localYpos += Constants.OVERVIEW_Y_AXIS_BIAS;
-        }
-
-        return lockedTargets;
-    }
-
     public int numberRowsInMiningHold() {
 
         var numberOfRows = 0;
@@ -85,7 +91,7 @@ public class ComparePixels {
             if (comparePixels(MINING_HOLD_FIRST_ROW_t, rowExists, IndicatorColour.FIRST_LETTER_M_IN_OVERVIEW.getShadeDeviation())) {
                 numberOfRows++;
                 localYPos += Constants.EXECUMER_MINING_HOLD_FIRST_ROW_t_Y_ASIS_BIAS;
-            }else {
+            } else {
                 break;
             }
         }
@@ -123,7 +129,7 @@ public class ComparePixels {
         return rDiff <= shadeDeviation && gDiff <= shadeDeviation && bDiff <= shadeDeviation;
     }
 
-    public boolean isInSpace(){
+    public boolean isInSpace() {
         return this.comparePixels(IndicatorColour.GREEN_SPACE_CIRCLE)
                 && this.comparePixels(IndicatorColour.TOP_RIGHT_TARGETS_LOCK)
                 && this.comparePixels(IndicatorColour.MIDDLE_DOT_TOP_RIGHT_OVERVIEW)
@@ -131,7 +137,7 @@ public class ComparePixels {
                 ;
     }
 
-    public boolean isInStation(){
+    public boolean isInStation() {
         return this.comparePixels(IndicatorColour.BLUE_LEFT_TOP_UNDOCK_BUTTON)
                 && this.comparePixels(IndicatorColour.BLUE_RIGHT_BOTTOM_UNDOCK_BUTTON)
                 && this.comparePixels(IndicatorColour.LETTER_U_UNDOCK_WORD)
@@ -141,56 +147,69 @@ public class ComparePixels {
                 ;
     }
 
-    public boolean isInWarp(){
+    public boolean isInWarp() {
         return this.comparePixels(IndicatorColour.WARP_DRIVE_WORD_LETTER_NAV_PANEL_W)
                 && this.comparePixels(IndicatorColour.WARP_DRIVE_WORD_NAV_PANEL_LETTER_i)
                 && this.comparePixels(IndicatorColour.WARP_DRIVE_WORD_NAV_PANEL_LETTER_g)
                 ;
     }
 
-    public boolean isItemHangarOpen(){
+    public boolean isItemHangarOpen() {
         return this.comparePixels(IndicatorColour.ITEM_HANGAR_LOCK)
                 && this.comparePixels(IndicatorColour.ITEM_HANGAR_LETTER_t)
                 && this.comparePixels(IndicatorColour.ITEM_HANGAR_LETTER_r)
                 ;
     }
 
-    public boolean isMiningHoldOpen(){
+    public boolean isMiningHoldOpen() {
         return this.comparePixels(IndicatorColour.MINING_HOLD_LOCK)
                 && this.comparePixels(IndicatorColour.MINING_HOLD_FIRST_LETTER_i)
                 && this.comparePixels(IndicatorColour.MINING_HOLD_FIRST_LETTER_d)
                 ;
     }
 
-    public boolean isExecumerMinigHoldAlmostFull(){
+    public boolean isExecumerMinigHoldAlmostFull() {
         return this.isMiningHoldOpen()
                 && !this.comparePixels(IndicatorColour.MINING_HOLD_ALMOST_FULL)
                 ;
     }
 
-    public boolean isExecumerMinigHoldEmpty(){
+    public boolean isExecumerMinigHoldEmpty() {
         return this.isMiningHoldOpen()
                 && this.comparePixels(IndicatorColour.MINING_HOLD_ALMOST_FULL)
                 && this.comparePixels(IndicatorColour.MINING_HOLD_LESS_THAN_MIDDLE)
                 ;
     }
 
-    public boolean isOnBelt(){
+    public boolean isOnBelt() {
         return this.comparePixels(IndicatorColour.FIRST_ROW_ASTEROID_ICON_PIXEL)
                 && this.comparePixels(IndicatorColour.FIRST_ROW_WORD_SIZE_LETTER_m)
                 && this.comparePixels(IndicatorColour.FIRST_LETTER_M_IN_OVERVIEW)
                 ;
     }
 
-    public boolean isLocationPanelOpen(){
+    public boolean isLocationPanelOpen() {
         return this.comparePixels(IndicatorColour.TOP_LEFT_LOCATIONS_LOCK)
                 && this.comparePixels(IndicatorColour.TOP_LEFT_MIDDLE_DOT_TOP_LOCATIONS)
                 && this.comparePixels(IndicatorColour.TOP_LEFT_GREEN_EYE_LOCATIONS)
                 ;
     }
 
-    public boolean doesOreRowExist(){
+    public boolean doesOreRowExist() {
         return this.comparePixels(IndicatorColour.MINING_HOLD_FIRST_ROW_t)
                 ;
+    }
+
+    public boolean checkStripMinerActive(IndicatorColour indicatorColour) {
+        //TODO уточнить количество циклов
+        for (int i = 0; i < 250; i++) {
+
+            if(this.comparePixels(indicatorColour)){
+                return true;
+            }
+            //TODO Уточнить время ожидания
+            Sleep.sleep(2,4);
+        }
+        return false;
     }
 }

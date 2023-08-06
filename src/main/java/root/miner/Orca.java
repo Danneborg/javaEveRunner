@@ -24,13 +24,13 @@ public class Orca extends Miner implements Mine {
 
     public void actTest() {
         //В этом блоке мы делаем операции для самой орки
-        if (getAwakeMoment() <= System.currentTimeMillis()) {
+        while (true) {
+            if (getAwakeMoment() <= System.currentTimeMillis()) {
                 orcaAct();
-//            while (true){
-//                orcaAct();
-//                Sleep.sleep(1000,1100);
-//            }
+                printState();
 
+            }
+            Sleep.sleep(800, 1100);
         }
     }
 
@@ -43,6 +43,7 @@ public class Orca extends Miner implements Mine {
             //В этом блоке мы делаем операции для самой орки
             if (getAwakeMoment() <= System.currentTimeMillis()) {
                 orcaAct();
+                printState();
             }
 
             for (var singleMiner : minerList) {
@@ -79,11 +80,11 @@ public class Orca extends Miner implements Mine {
             setOreHoldOpen(getComparePixels().isMiningHoldOpen());
 
             if (!isItemHangarOpen()) {
-                doOpenFolder(()->getComparePixels().isItemHangarOpen(),()->getKeyBoardPress().openItemHangar(),"Item hangar");
+                doOpenFolder(() -> getComparePixels().isItemHangarOpen(), () -> getKeyBoardPress().openItemHangar(), "Item hangar");
             }
 
             if (!isOreHoldOpen()) {
-                doOpenFolder(()->getComparePixels().isMiningHoldOpen(),()->getKeyBoardPress().openExecumerMiningHold(),"Mining hold");
+                doOpenFolder(() -> getComparePixels().isMiningHoldOpen(), () -> getKeyBoardPress().openExecumerMiningHold(), "Mining hold");
             }
 
             setOreHoldFull(getComparePixels().isExecumerMinigHoldAlmostFull());
@@ -91,8 +92,7 @@ public class Orca extends Miner implements Mine {
 
             if (isOreHoldEmpty()) {
                 setState(State.UNDOCKING);
-
-                //TODO добавить команду андока
+                doUndock();
                 setAwakeMoment(10000L);
                 return;
             }
@@ -100,6 +100,7 @@ public class Orca extends Miner implements Mine {
             if (isOreHoldFull() || !isOreHoldEmpty()) {
                 setState(State.IN_STATION_UNLOADING);
                 unloadExecumerMinigHold();
+                return;
             }
 
         }
@@ -107,19 +108,36 @@ public class Orca extends Miner implements Mine {
         setOnBelt(getComparePixels().isOnBelt());
 
         if (isInSpace() && !isOnBelt()) {
-            System.out.println("3");
+
+            setState(State.IN_SPACE);
+
             if (!isLocationPanelOpen()) {
-                doOpenFolder(()->getComparePixels().isLocationPanelOpen(),()->getKeyBoardPress().openBookmarkPanel(),"Bookmark panel");
+                doOpenFolder(() -> getComparePixels().isLocationPanelOpen(), () -> getKeyBoardPress().openBookmarkPanel(), "Bookmark panel");
             }
 
             warpOnBelt();
-            setState(State.IN_WARP);
             setSleep(50000L);
             //TODO можно добавить проверку нахождения уже кого-то на белте, в случае с оркой это важно для более быстрого подбора руды
 
         }
 
-        printState();
+        if (isInSpace() && isOnBelt()) {
+
+            setState(State.ON_BELT);
+
+            if (isOreHoldFull()) {
+
+                //TODO добавить команду варпа на станцию или сброса контейнера, для орки это варп на станцию
+
+            }
+
+            if (getState() != State.MINING_STRIP_ACTIVATED) {
+
+                mine();
+
+            }
+
+        }
 
     }
 

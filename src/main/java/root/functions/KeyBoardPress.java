@@ -29,12 +29,22 @@ public class KeyBoardPress {
         return null;
     }
 
-    private void pressKey(int key){
-        // Simulate pressing the 'A' key
+    public void pressKey(int key){
         robot.keyPress(key);
         Sleep.sleep(4,12);
-        // Simulate releasing the 'A' key
         robot.keyRelease(key);
+    }
+
+    public void pressKeyWithoutRelease(int key){
+        Sleep.sleep(4,12);
+        robot.keyPress(key);
+        Sleep.sleep(15,25);
+    }
+
+    public void keyRelease(int key){
+        Sleep.sleep(4,12);
+        robot.keyRelease(key);
+        Sleep.sleep(15,25);
     }
 
     private void pressTwoKeys(int keyFirst, int keySecond){

@@ -11,4 +11,8 @@ public interface Mine {
     void warpOnBelt() throws InterruptedException;
 
     void unloadExecumerMinigHold() throws InterruptedException;
+
+    void doUndock();
+
+    void mine();
 }
