@@ -28,7 +28,6 @@ public class Orca extends Miner implements Mine {
             if (getAwakeMoment() <= System.currentTimeMillis()) {
                 orcaAct();
                 printState();
-
             }
             Sleep.sleep(800, 1100);
         }
@@ -94,7 +93,7 @@ public class Orca extends Miner implements Mine {
             if (isOreHoldEmpty()) {
                 setState(State.UNDOCKING);
                 doUndock();
-                setAwakeMoment(10000L);
+                setSleep(10000L);
                 return;
             }
 
@@ -122,16 +121,23 @@ public class Orca extends Miner implements Mine {
 
         }
 
-        if (isInSpace() && isOnBelt()) {
-
+        if (isInSpace() && isOnBelt() || State.ON_BELT.equals(getState())) {
             setState(State.ON_BELT);
+            setOreHoldFull(getComparePixels().isExecumerMinigHoldAlmostFull());
+            setOreHoldOpen(getComparePixels().isMiningHoldOpen());
 
             //TODO добавить логику реварпа на другой белт, если общее количество целей для лока меньше 2
 
+            if (!isOreHoldOpen()) {
+                doOpenFolder(() -> getComparePixels().isMiningHoldOpen(), () -> getKeyBoardPress().openExecumerMiningHold(), "Mining hold");
+                Sleep.sleep(300, 400);
+            }
+
             if (isOreHoldFull()) {
-
+                //TODO УБРАТЬ ПОСЛЕ ТЕСТА, ДРОП КОНТОВ НУЖЕН ТОЛЬКО ДЛЯ ОБЫЧНЫХ ЛОПАТ
+                jettisonExecumer();
                 //TODO добавить команду варпа на станцию или сброса контейнера, для орки это варп на станцию
-
+                return;
             }
 
             if (getState() != State.MINING_STRIP_ACTIVATED) {

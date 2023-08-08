@@ -137,6 +137,43 @@ public abstract class Miner implements Mine {
     }
 
     @Override
+    public void jettisonExecumer() {
+
+        var countRows = comparePixels.numberRowsInMiningHold();
+
+        //Если строка 1, то просто жмем jettison
+        var rectangleRMBClick = DefineCoordinate.defineCoordinate(Constants.FIRS_ROW_EXECUMER_MINING_HOLD);
+        if (countRows == 1) {
+            var lcmX = rectangleRMBClick.getPosX() + DefineCoordinate.rnd(Constants.EXECUMER_MINING_HOLD_JETTISON_X_ASIS_MIN_BIAS, Constants.EXECUMER_MINING_HOLD_JETTISON_X_ASIS_MAX_BIAS);
+            var lcmY = rectangleRMBClick.getPosY() + DefineCoordinate.rnd(Constants.EXECUMER_MINING_HOLD_JETTISON_Y_ASIS_MIN_BIAS, Constants.EXECUMER_MINING_HOLD_JETTISON_Y_ASIS_MAX_BIAS);
+            var lcmCoordinate = new Coordinate(lcmX, lcmY);
+            click.doClick(MouseButton.RIGHT, rectangleRMBClick, DefineCoordinate.rnd(1500, 1750));
+            Sleep.sleep(200,400);
+            click.doClick(MouseButton.LEFT, lcmCoordinate, DefineCoordinate.rnd(1500, 1750));
+        }
+        //Сначала нужно выделить все строки, а уже потом нажать jettison
+        else {
+            click.doClick(MouseButton.RIGHT, rectangleRMBClick, DefineCoordinate.rnd(1500, 1750));
+            Sleep.sleep(400, 600);
+            var lcmX = rectangleRMBClick.getPosX() + DefineCoordinate.rnd(Constants.EXECUMER_MINING_HOLD_SELECT_ALL_X_ASIS_MIN_BIAS, Constants.EXECUMER_MINING_HOLD_SELECT_ALL_X_ASIS_MAX_BIAS);
+            var lcmY = rectangleRMBClick.getPosY() + DefineCoordinate.rnd(Constants.EXECUMER_MINING_HOLD_SELECT_ALL_Y_ASIS_MIN_BIAS, Constants.EXECUMER_MINING_HOLD_SELECT_ALL_Y_ASIS_MAX_BIAS);
+            var lcmCoordinate = new Coordinate(lcmX, lcmY);
+            click.doClick(MouseButton.LEFT, lcmCoordinate, DefineCoordinate.rnd(1500, 1750));
+            Sleep.sleep(400, 600);
+
+            var rectangleRMBClickSecond = DefineCoordinate.defineCoordinate(Constants.FIRS_ROW_EXECUMER_MINING_HOLD);
+            var lcmXSecond = rectangleRMBClickSecond.getPosX() + DefineCoordinate.rnd(Constants.EXECUMER_MINING_HOLD_JETTISON_X_ASIS_MIN_BIAS, Constants.EXECUMER_MINING_HOLD_JETTISON_X_ASIS_MAX_BIAS);
+            var lcmYSecond = rectangleRMBClickSecond.getPosY() + DefineCoordinate.rnd(Constants.EXECUMER_MINING_HOLD_SELECT_ALL_JETTISON_Y_ASIS_MIN_BIAS, Constants.EXECUMER_MINING_HOLD_SELECT_ALL_JETTISON_Y_ASIS_MAX_BIAS);
+            var lcmCoordinateSecond = new Coordinate(lcmXSecond, lcmYSecond);
+            click.doClick(MouseButton.RIGHT, rectangleRMBClickSecond, DefineCoordinate.rnd(1500, 1750));
+            Sleep.sleep(400,500);
+            click.doClick(MouseButton.LEFT, lcmCoordinateSecond, DefineCoordinate.rnd(1500, 1750));
+
+        }
+        Sleep.sleep(800, 1200);
+    }
+
+    @Override
     public void mine() {
 
         setLockedTargets(comparePixels.numberOfLockedTargetsWithCoordinates());
@@ -145,13 +182,15 @@ public abstract class Miner implements Mine {
 
         if(availableTargetsCloser10km < 2){
             align();
+            setSleep(10000L);
+            setState(State.ON_BELT_ALIGNING);
+            return;
         }
 
         var lockedTargets = comparePixels.numberOfLockedTargets();
         if (lockedTargets < 2) {
             lockTarget(availableTargetsCloser10km, 4 - lockedTargets);
         }
-
 
         if (getState() != State.MINING_STRIP_ACTIVATED) {
 
@@ -165,7 +204,7 @@ public abstract class Miner implements Mine {
             //TODO добавить функцию реактивации стрипов
         }
 
-        setAwakeMoment(35000L);
+        setSleep(25000L);
     }
 
     @Override
@@ -231,6 +270,7 @@ public abstract class Miner implements Mine {
                 return true;
             }
             keyPresser.get();
+            Sleep.sleep(300,400);
         }
 
         System.out.printf("Не удалось выполнить действие по открытию окна : %s%n", title);

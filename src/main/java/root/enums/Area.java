@@ -5,6 +5,7 @@ import root.indicator.Coordinate;
 import root.indicator.Rectangle;
 
 @Getter
+//TODO все Area это просто прямоугольники, класс Area избыточен, нужно просто сделать константы в виде прямоугольников
 public enum Area {
 
     LOCATION_PANEL_FIRST_BOOKMARK(new Rectangle(new Coordinate(135, 205), new Coordinate(335, 217))),

@@ -15,4 +15,6 @@ public interface Mine {
     void doUndock();
 
     void mine();
+
+    void jettisonExecumer();
 }
