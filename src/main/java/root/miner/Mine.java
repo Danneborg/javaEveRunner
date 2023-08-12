@@ -17,4 +17,8 @@ public interface Mine {
     void mine();
 
     void jettisonExecumer();
+
+    void launchDrones();
+
+    void returnDrones();
 }

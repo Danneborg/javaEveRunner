@@ -27,13 +27,13 @@ public abstract class Miner implements Mine {
 
     private State state;
     private boolean isInSpace;
+    private boolean dronesLaunched;
     private boolean isInInWarp;
     private boolean isInInStation;
     private boolean isOreHoldOpen;
     private boolean isItemHangarOpen;
     private boolean isFirstMinerActive;
     private boolean isSecondMinerActive;
-    private boolean areDronesLaunched;
     private boolean areTargetsLocked;
     private boolean isOreHoldEmpty;
     private boolean isOreHoldFull;
@@ -84,8 +84,33 @@ public abstract class Miner implements Mine {
         setState(State.IN_WARP);
     }
 
+    private void deactivateStripMiners() {
+        System.out.println("Деактивирую стрипы");
+        //TODO вынести это в константы, уточнить количество попыток
+        for (int i = 0; i < 5; i++) {
+
+            if (isFirstMinerActive()) {
+                keyBoardPress.pressKey(KeyEvent.VK_F1);
+            }
+
+            if (isSecondMinerActive()) {
+                keyBoardPress.pressKey(KeyEvent.VK_F2);
+            }
+
+            Sleep.sleep(400, 500);
+            setFirstMinerActive(getComparePixels().checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_1));
+            setSecondMinerActive(getComparePixels().checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_2));
+
+            if (!isFirstMinerActive() && !isSecondMinerActive()) {
+                return;
+            }
+        }
+    }
+
+    //TODO, подумать над возможностью сделать 1 метод для активации/деактивации стрипов
     private void activateStripMiners() {
         //TODO вынести это в константы, уточнить количество попыток
+        System.out.println("Активирую стрипы");
         for (int i = 0; i < 5; i++) {
 
             if (!isFirstMinerActive()) {
@@ -118,7 +143,6 @@ public abstract class Miner implements Mine {
             }
         }
 
-        System.out.println(rowsToClick);
         keyBoardPress.pressKeyWithoutRelease(KeyEvent.VK_CONTROL);
         for (int i = 0; i < numberTargetsToLock; i++) {
             var clickPos = DefineCoordinate.defineCoordinate(Area.OVERVIEW_FIRST_ROW, 0, Constants.OVERVIEW_Y_AXIS_BIAS * rowsToClick.get(i));
@@ -129,11 +153,23 @@ public abstract class Miner implements Mine {
 
     }
 
-    private void align(){
+    private void align() {
         keyBoardPress.pressKeyWithoutRelease(KeyEvent.VK_Q);
         click.doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(Area.OVERVIEW_FIRST_ROW.getRectangle()), DefineCoordinate.rnd(900, 1200));
         Sleep.sleep(200, 400);
         keyBoardPress.keyRelease(KeyEvent.VK_CONTROL);
+    }
+
+    @Override
+    public void launchDrones() {
+        click.doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(Area.LEFT_CLICK_BEFORE_DRONE_LAUNCH.getRectangle()), DefineCoordinate.rnd(900, 1200));
+        keyBoardPress.launchDrones();
+    }
+
+    @Override
+    public void returnDrones() {
+        click.doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(Area.LEFT_CLICK_BEFORE_DRONE_LAUNCH.getRectangle()), DefineCoordinate.rnd(900, 1200));
+        keyBoardPress.returnDrones();
     }
 
     @Override
@@ -148,7 +184,7 @@ public abstract class Miner implements Mine {
             var lcmY = rectangleRMBClick.getPosY() + DefineCoordinate.rnd(Constants.EXECUMER_MINING_HOLD_JETTISON_Y_ASIS_MIN_BIAS, Constants.EXECUMER_MINING_HOLD_JETTISON_Y_ASIS_MAX_BIAS);
             var lcmCoordinate = new Coordinate(lcmX, lcmY);
             click.doClick(MouseButton.RIGHT, rectangleRMBClick, DefineCoordinate.rnd(1500, 1750));
-            Sleep.sleep(200,400);
+            Sleep.sleep(200, 400);
             click.doClick(MouseButton.LEFT, lcmCoordinate, DefineCoordinate.rnd(1500, 1750));
         }
         //Сначала нужно выделить все строки, а уже потом нажать jettison
@@ -166,7 +202,7 @@ public abstract class Miner implements Mine {
             var lcmYSecond = rectangleRMBClickSecond.getPosY() + DefineCoordinate.rnd(Constants.EXECUMER_MINING_HOLD_SELECT_ALL_JETTISON_Y_ASIS_MIN_BIAS, Constants.EXECUMER_MINING_HOLD_SELECT_ALL_JETTISON_Y_ASIS_MAX_BIAS);
             var lcmCoordinateSecond = new Coordinate(lcmXSecond, lcmYSecond);
             click.doClick(MouseButton.RIGHT, rectangleRMBClickSecond, DefineCoordinate.rnd(1500, 1750));
-            Sleep.sleep(400,500);
+            Sleep.sleep(400, 500);
             click.doClick(MouseButton.LEFT, lcmCoordinateSecond, DefineCoordinate.rnd(1500, 1750));
 
         }
@@ -179,8 +215,9 @@ public abstract class Miner implements Mine {
         setLockedTargets(comparePixels.numberOfLockedTargetsWithCoordinates());
 
         var availableTargetsCloser10km = comparePixels.numberOfRowsCloserThan10km();
+        var availableTargetsFurther10km = comparePixels.numberOfRowsFurtherThan10km();
 
-        if(availableTargetsCloser10km < 2){
+        if (availableTargetsCloser10km < 2 && availableTargetsFurther10km > 2) {
             align();
             setSleep(10000L);
             setState(State.ON_BELT_ALIGNING);
@@ -192,16 +229,20 @@ public abstract class Miner implements Mine {
             lockTarget(availableTargetsCloser10km, 4 - lockedTargets);
         }
 
-        if (getState() != State.MINING_STRIP_ACTIVATED) {
+        setFirstMinerActive(getComparePixels().checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_1));
+        setSecondMinerActive(getComparePixels().checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_2));
 
+        if (getState() != State.ON_BELT_MINING_STRIP_ACTIVATED) {
+
+            setState(State.ON_BELT_MINING_STRIP_ACTIVATED);
             if (!isFirstMinerActive() || !isSecondMinerActive()) {
 
                 activateStripMiners();
 
+            } else {
+                deactivateStripMiners();
+                activateStripMiners();
             }
-
-        } else {
-            //TODO добавить функцию реактивации стрипов
         }
 
         setSleep(25000L);
@@ -270,7 +311,7 @@ public abstract class Miner implements Mine {
                 return true;
             }
             keyPresser.get();
-            Sleep.sleep(300,400);
+            Sleep.sleep(300, 400);
         }
 
         System.out.printf("Не удалось выполнить действие по открытию окна : %s%n", title);

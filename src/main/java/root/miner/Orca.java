@@ -35,6 +35,7 @@ public class Orca extends Miner implements Mine {
 
     //В это методе идет вечный цикл с опросом зависимых окон и собственного состояния
     @Override
+    //TODO добавить замер времени выполнения каждого шага в алгоритме для оптимизации и повышения быстродействия
     public void act() {
 
         while (true) {
@@ -121,8 +122,15 @@ public class Orca extends Miner implements Mine {
 
         }
 
-        if (isInSpace() && isOnBelt() || State.ON_BELT.equals(getState())) {
-            setState(State.ON_BELT);
+        if (isInSpace() && isOnBelt()
+                || State.ON_BELT.equals(getState())
+                || State.ON_BELT_ALIGNING.equals(getState())
+                || State.ON_BELT_MINING_STRIP_ACTIVATED.equals(getState())) {
+
+            if (!State.ON_BELT.equals(getState())) {
+                setState(State.ON_BELT);
+            }
+
             setOreHoldFull(getComparePixels().isExecumerMinigHoldAlmostFull());
             setOreHoldOpen(getComparePixels().isMiningHoldOpen());
 
@@ -136,14 +144,17 @@ public class Orca extends Miner implements Mine {
             if (isOreHoldFull()) {
                 //TODO УБРАТЬ ПОСЛЕ ТЕСТА, ДРОП КОНТОВ НУЖЕН ТОЛЬКО ДЛЯ ОБЫЧНЫХ ЛОПАТ
                 jettisonExecumer();
+                Sleep.sleep(200, 300);
+                returnDrones();
                 //TODO добавить команду варпа на станцию или сброса контейнера, для орки это варп на станцию
                 return;
-            }
+            }else {
 
-            if (getState() != State.MINING_STRIP_ACTIVATED) {
+                if(!isDronesLaunched()){
+                    launchDrones();
+                }
 
                 mine();
-
             }
 
         }

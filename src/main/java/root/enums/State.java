@@ -2,7 +2,7 @@ package root.enums;
 
 public enum State {
 
-    MINING_STRIP_ACTIVATED,
+    ON_BELT_MINING_STRIP_ACTIVATED,
     ON_BELT_ALIGNING,
     ON_BELT,
     IN_SPACE,

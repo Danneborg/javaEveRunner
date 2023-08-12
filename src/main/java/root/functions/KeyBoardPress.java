@@ -16,6 +16,20 @@ public class KeyBoardPress {
         return null;
     }
 
+    public Void launchDrones(){
+        // Simulate pressing the 'A' key
+        pressTwoKeys(KeyEvent.VK_SHIFT, KeyEvent.VK_F);
+        Sleep.sleep(200,300);
+        return null;
+    }
+
+    public Void returnDrones(){
+        // Simulate pressing the 'A' key
+        pressTwoKeys(KeyEvent.VK_SHIFT, KeyEvent.VK_R);
+        Sleep.sleep(200,300);
+        return null;
+    }
+
     public Void openItemHangar(){
         // Simulate pressing the 'A' key
         pressTwoKeys(KeyEvent.VK_ALT, KeyEvent.VK_G);

@@ -30,6 +30,7 @@ public enum IndicatorColour {
     MINING_HOLD_LESS_AROUND_MIDDLE(0x0E0E0E, 10, new Coordinate(502, 530)),//черный пиксель в полоске заполненности руды
     MINING_HOLD_ALMOST_FULL(0x0E0E0E, 10, new Coordinate(657, 530)),//черный пиксель в полоске заполненности руды
 
+    //TODO подумать, как определить есть ли дроны в космосе
     DRONE_HOLD_LOCK(0xE3E3E3, 10, new Coordinate(1558, 583)),//белый пиксель в икноке замка вкладки дронов
 
     GREEN_POINT_MINER_1(0x4C6F41, 10, new Coordinate(1174, 736)),//зеленый пиксель в иконке 1ого слота майнингового оборудования

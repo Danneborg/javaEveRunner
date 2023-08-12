@@ -99,6 +99,26 @@ public class ComparePixels {
         return numberOfRows;
     }
 
+    public int numberOfRowsFurtherThan10km() {
+
+        var numberOfRows = 0;
+        var localYPos = Y_POS_COUNT_ROWS_OVERVIEW;
+
+        for (int i = 0; i < Constants.NUMBER_OF_OVERVIEW_ROWS; i++) {
+
+            var mSample = robot.getPixelColor(IndicatorColour.FIRST_LETTER_M_IN_OVERVIEW.getCoordinate().getPosX(), localYPos);
+            var kSample = robot.getPixelColor(IndicatorColour.FIRST_LETTER_K_IN_OVERVIEW.getCoordinate().getPosX(), localYPos);
+
+            if (comparePixels(STANDARD_M_OVERVIEW, mSample, IndicatorColour.FIRST_LETTER_M_IN_OVERVIEW.getShadeDeviation())
+                    && comparePixels(STANDARD_K_OVERVIEW, kSample, IndicatorColour.FIRST_LETTER_K_IN_OVERVIEW.getShadeDeviation())) {
+                numberOfRows++;
+            }
+            localYPos += Constants.OVERVIEW_Y_AXIS_BIAS;
+        }
+
+        return numberOfRows;
+    }
+
     public int numberOfRowsCloserThan10km() {
 
         var numberOfRows = 0;
@@ -202,7 +222,7 @@ public class ComparePixels {
 
     public boolean checkStripMinerActive(IndicatorColour indicatorColour) {
         //TODO уточнить количество циклов
-        for (int i = 0; i < 250; i++) {
+        for (int i = 0; i < 200; i++) {
 
             if(this.comparePixels(indicatorColour)){
                 return true;
