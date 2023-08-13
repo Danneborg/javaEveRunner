@@ -14,7 +14,7 @@ public enum Area {
     FIRS_ROW_EXECUMER_MINING_HOLD(new Rectangle(new Coordinate(450, 570), new Coordinate(600, 580))),
     ITEM_HANGAR_DROP(new Rectangle(new Coordinate(400, 90), new Coordinate(600, 370))),
     UNDOCK_BUTTON(new Rectangle(new Coordinate(1350, 280), new Coordinate(1560, 300))),
-    LEFT_CLICK_BEFORE_DRONE_LAUNCH(new Rectangle(new Coordinate(770, 340), new Coordinate(1000, 500))),
+    LEFT_CLICK_BEFORE_DRONE_LAUNCH(new Rectangle(new Coordinate(1140, 580), new Coordinate(1256, 680))),
     ;
 
     private final Rectangle rectangle;

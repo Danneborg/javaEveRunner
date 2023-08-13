@@ -9,6 +9,7 @@ import root.indicator.Coordinate;
 import root.indicator.Rectangle;
 
 import java.awt.event.KeyEvent;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -24,6 +25,7 @@ public abstract class Miner implements Mine {
     private final Click click;
     private final Role role;
     private final KeyBoardPress keyBoardPress;
+    private final FleetConstants fleetConstants;
 
     private State state;
     private boolean isInSpace;
@@ -45,8 +47,11 @@ public abstract class Miner implements Mine {
     //Текущее порядковое значение белта окна
     private int currentBelt = 1;
     //Глобальное порядковое значение белта
-    private int globalBelt = 1;
     //TODO добавить ограничение по максимальному количеству белтов
+    private int globalBelt = 1;
+    private int availableTargetsCloser10km = 0;
+    private int availableTargetsFurther10km = 0;
+    private int numberOfRowsInMiningHold = 0;
 
     public abstract void collectState();
 
@@ -131,7 +136,7 @@ public abstract class Miner implements Mine {
         }
     }
 
-    private void lockTarget(int numberOfAvailableTargets, int numberTargetsToLock) {
+    public void lockTarget(int numberOfAvailableTargets, int numberTargetsToLock) {
 
         List<Integer> rowsToClick = new ArrayList<>();
 
@@ -153,7 +158,7 @@ public abstract class Miner implements Mine {
 
     }
 
-    private void align() {
+    public void align() {
         keyBoardPress.pressKeyWithoutRelease(KeyEvent.VK_Q);
         click.doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(Area.OVERVIEW_FIRST_ROW.getRectangle()), DefineCoordinate.rnd(900, 1200));
         Sleep.sleep(200, 400);
@@ -162,10 +167,11 @@ public abstract class Miner implements Mine {
 
     @Override
     public void launchDrones() {
-        click.doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(Area.LEFT_CLICK_BEFORE_DRONE_LAUNCH.getRectangle()), DefineCoordinate.rnd(900, 1200));
+        click.doDragAndDrop(DefineCoordinate.defineCoordinate(Constants.DRONE_HOLD_DRONE_IN_A_BAY_LINE), DefineCoordinate.defineCoordinate(Constants.DRONE_HOLD_DRAG_OUT), DefineCoordinate.rnd(1400, 1700));
         keyBoardPress.launchDrones();
     }
 
+    //TODO подумать, как можно взвращаться дронов через драг и дроп
     @Override
     public void returnDrones() {
         click.doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(Area.LEFT_CLICK_BEFORE_DRONE_LAUNCH.getRectangle()), DefineCoordinate.rnd(900, 1200));
@@ -214,9 +220,15 @@ public abstract class Miner implements Mine {
 
         setLockedTargets(comparePixels.numberOfLockedTargetsWithCoordinates());
 
-        var availableTargetsCloser10km = comparePixels.numberOfRowsCloserThan10km();
-        var availableTargetsFurther10km = comparePixels.numberOfRowsFurtherThan10km();
+        if(getAvailableTargetsCloser10km() == 0){
+            setAvailableTargetsCloser10km(comparePixels.numberOfRowsCloserThan10km());
+        }
 
+        if(getAvailableTargetsFurther10km() == 0){
+            setAvailableTargetsFurther10km(comparePixels.numberOfRowsFurtherThan10km());
+        }
+
+        //TODO, возможно, с оркой это правило вообще не нужно, но, тогда нужно переделывать логику лока, добавлять метод, который просто лочит первые N астероидов
         if (availableTargetsCloser10km < 2 && availableTargetsFurther10km > 2) {
             align();
             setSleep(10000L);
@@ -281,26 +293,25 @@ public abstract class Miner implements Mine {
             click.doDragAndDrop(new Coordinate(dragAndDropFrom.getPosX(), yBias), DefineCoordinate.defineCoordinate(Constants.ITEM_HANGAR_DROP), DefineCoordinate.rnd(800, 1000));
 
         }
+        numberOfRowsInMiningHold = 0;
         Sleep.sleep(800, 1200);
     }
 
     public void printState() {
-
         System.out.println("===============================");
-        System.out.printf("Статус - %s%n", this.getState());
-        System.out.printf("isInSpace - %s%n", this.isInSpace());
-        System.out.printf("isInInWarp - %s%n", this.isInInWarp());
-        System.out.printf("isInInStation - %s%n", this.isInInStation());
-        System.out.printf("isOreHoldOpen - %s%n", this.isOreHoldOpen());
-        System.out.printf("isItemHangarOpen - %s%n", this.isItemHangarOpen());
-        System.out.printf("isOnBelt - %s%n", this.isOnBelt());
-        System.out.printf("isLocationPanelOpen - %s%n", this.isLocationPanelOpen());
-        System.out.printf("currentBelt - %s%n", this.getCurrentBelt());
-        System.out.printf("globalBelt - %s%n", this.getGlobalBelt());
-        System.out.printf("execumerMiningHoldFull - %s%n", this.isOreHoldFull());
-        System.out.printf("execumerMiningHoldEmpty - %s%n", this.isOreHoldEmpty());
+        System.out.printf("Статус - %s. ", this.getState());
+        System.out.printf("isInSpace - %s. ", this.isInSpace());
+        System.out.printf("isInInWarp - %s. ", this.isInInWarp());
+        System.out.printf("isInInStation - %s. ", this.isInInStation());
+        System.out.printf("isOreHoldOpen - %s. ", this.isOreHoldOpen());
+        System.out.printf("isItemHangarOpen - %s. ", this.isItemHangarOpen());
+        System.out.printf("isOnBelt - %s. ", this.isOnBelt());
+        System.out.printf("isLocationPanelOpen - %s. ", this.isLocationPanelOpen());
+        System.out.printf("currentBelt - %s. ", this.getCurrentBelt());
+        System.out.printf("globalBelt - %s. ", this.getGlobalBelt());
+        System.out.printf("execumerMiningHoldFull - %s. ", this.isOreHoldFull());
+        System.out.printf("execumerMiningHoldEmpty - %s. ", this.isOreHoldEmpty());
         System.out.println("===============================");
-
     }
 
     public boolean doOpenFolder(Supplier<Boolean> checker, Supplier<Void> keyPresser, String title) {

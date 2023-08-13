@@ -7,6 +7,7 @@ import root.enums.WindowName;
 import root.functions.*;
 import root.indicator.Coordinate;
 import root.indicator.Rectangle;
+import root.miner.FleetConstants;
 import root.miner.Orca;
 
 import java.awt.*;
@@ -19,11 +20,13 @@ public class FunctionsTest {
         Robot robot = new Robot();
         Click click = new Click(robot);
         KeyBoardPress keyBoardPress = new KeyBoardPress();
+        FleetConstants fleetConstants = new FleetConstants();
 
-        Orca m = new Orca(WindowName.TORWAK_MARTIN, windowActivate, comparePixels, click, keyBoardPress);
+        Orca m = new Orca(WindowName.TORWAK_MARTIN, windowActivate, comparePixels, click, keyBoardPress, fleetConstants);
         m.actTest();
 //        windowActivate.activateWindow(WindowName.TORWAK_MARTIN.getTitle());
-//        System.out.println(comparePixels.numberOfRowsFurtherThan10km());
+//        System.out.println(comparePixels.checkDrones());
+//        System.out.println(comparePixels.isInStation());
 //        while (true){
 //            System.out.println(comparePixels.checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_1));
 //            System.out.println(comparePixels.checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_2));

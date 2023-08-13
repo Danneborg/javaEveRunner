@@ -1,6 +1,9 @@
 package root.enums;
 
+import root.indicator.Coordinate;
 import root.indicator.Rectangle;
+
+import java.util.Set;
 
 public final class Constants {
 
@@ -10,7 +13,7 @@ public final class Constants {
     //TODO (возможно, нужно будет подкорректировать это значение). Количество пикселей, среди которых может быть отклонение в панели букмарок
     public static final int BOOK_PANEL_Y_AXIS_BIAS_RAND = 10;
     public static final int BOOK_PANEL_X_AXIS_MIN_BIAS_FOR_LEFT_CLICK = 50;
-    public static final int BOOK_PANEL_X_AXIS_MAX_BIAS_FOR_LEFT_CLICK = 150;
+    public static final int BOOK_PANEL_X_AXIS_MAX_BIAS_FOR_LEFT_CLICK = 155;
     public static final int BOOK_PANEL_Y_AXIS_MIN_BIAS_FOR_LEFT_CLICK = 8;
     public static final int BOOK_PANEL_Y_AXIS_MAX_BIAS_FOR_LEFT_CLICK = 15;
 
@@ -28,9 +31,14 @@ public final class Constants {
     public static final int EXECUMER_MINING_HOLD_SELECT_ALL_JETTISON_Y_ASIS_MIN_BIAS = 110;
     public static final int EXECUMER_MINING_HOLD_SELECT_ALL_JETTISON_Y_ASIS_MAX_BIAS = 120;
 
+    public static final int MINING_DRONE_WORD_MINING_LETTER_i_Y_BIAS = 22;
+    public static final int MINING_DRONE_NUMBER_FOR_COUNT = 4;
+
     public static final int MOUSE_MOVE_SPEED = 4;
     public static Rectangle LOCATION_PANEL_FIRST_BOOKMARK_COORDINATE = Area.LOCATION_PANEL_FIRST_BOOKMARK.getRectangle();
     public static Rectangle FIRS_ROW_EXECUMER_MINING_HOLD = Area.FIRS_ROW_EXECUMER_MINING_HOLD.getRectangle();
     public static Rectangle ITEM_HANGAR_DROP = Area.ITEM_HANGAR_DROP.getRectangle();
-
+    public static Rectangle DRONE_HOLD_DRONE_IN_A_BAY_LINE = new Rectangle(new Coordinate(1310, 583), new Coordinate(1400, 591));//место с надписью drone in bay которое можно тянуть за лкм
+    public static Rectangle DRONE_HOLD_DRAG_OUT = new Rectangle(new Coordinate(1270, 790), new Coordinate(1540, 870));//свободная часть пространства куда можно перетянуть дронов для запуска
+    public static Set<State> ON_BELT_STATES = Set.of(State.ON_BELT, State.ON_BELT_ALIGNING, State.ON_BELT_DRONES_MINING, State.ON_BELT_MINING_STRIP_ACTIVATED);
 }

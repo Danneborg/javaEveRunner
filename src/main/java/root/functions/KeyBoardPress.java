@@ -43,6 +43,12 @@ public class KeyBoardPress {
         return null;
     }
 
+    public Void openInventoryHold(){
+        pressTwoKeys(KeyEvent.VK_ALT, KeyEvent.VK_C);
+        Sleep.sleep(400,500);
+        return null;
+    }
+
     public void pressKey(int key){
         robot.keyPress(key);
         Sleep.sleep(4,12);

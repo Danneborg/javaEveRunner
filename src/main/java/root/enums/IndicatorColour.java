@@ -2,6 +2,8 @@ package root.enums;
 
 import root.indicator.Coordinate;
 
+import java.awt.*;
+
 public enum IndicatorColour {
 
     //Пиксели для определения нахождения в космосе
@@ -24,6 +26,11 @@ public enum IndicatorColour {
     MINING_HOLD_FIRST_LETTER_i(0xE6E6E6, 10, new Coordinate(396, 508)),//белый в первой букве i вкладки руды
     MINING_HOLD_FIRST_LETTER_d(0xDFDFDF, 10, new Coordinate(445, 508)),//белый букве d вкладки руды
     MINING_HOLD_FIRST_ROW_t(0xC5C5C5, 10, new Coordinate(622, 574)),//белый пиксель букве t в слове Asteroid в строке с рудой, нужен для подсчета зоны куда сделать клик при перетаскивании руды
+
+    //Пиксели для определения открыт ли основное хранилище в орке
+    INVENTORY_HOLD_LOCK(0xD6D6D6, 10, new Coordinate(610, 709)),//белый пиксель в икноке замка вкладки руды
+    MINING_HOLD_CROSS_CENTER(0xD6D6D6, 10, new Coordinate(657, 714)),//перекрестие закрытия вкладки, символ Х
+    CONTEXT_MENU_WHITE_MIDDLE_DOT(0xD6D6D6, 10, new Coordinate(585, 714)),//белый букве d вкладки руды
 
     //Пиксели для определения заполненности ангара руды на экзекюмере
     MINING_HOLD_LESS_THAN_MIDDLE(0x0E0E0E, 10, new Coordinate(402, 530)),//черный пиксель в полоске заполненности руды
@@ -50,12 +57,17 @@ public enum IndicatorColour {
     WARP_DRIVE_WORD_NAV_PANEL_LETTER_i(0xE3E6E7, 10, new Coordinate(1079, 847)),
     WARP_DRIVE_WORD_NAV_PANEL_LETTER_g(0xE1E6E7, 10, new Coordinate(1091, 849)),
 
-    //Пиксели для определения нахождения внутри станции
-    BLUE_LEFT_TOP_UNDOCK_BUTTON(0x58A7BF, 10, new Coordinate(1340, 269)),
-    BLUE_RIGHT_BOTTOM_UNDOCK_BUTTON(0x58A7BF, 10, new Coordinate(1581, 308)),
+    BLUE_LEFT_TOP_UNDOCK_BUTTON_ALFA(0x58A7BF, 10, new Coordinate(1340, 269)),
+    BLUE_LEFT_TOP_UNDOCK_BUTTON_OMEGA(0x9AD2E3, 10, new Coordinate(1340, 269)),
+    BLUE_RIGHT_BOTTOM_UNDOCK_BUTTON_ALFA(0x58A7BF, 10, new Coordinate(1581, 308)),
+    BLUE_RIGHT_BOTTOM_UNDOCK_BUTTON_OMEGA(0x9AD2E3, 10, new Coordinate(1581, 308)),
     LETTER_U_UNDOCK_WORD(0xC6CCCE, 32, new Coordinate(1446, 284)),
     LETTER_k_UNDOCK_WORD(0xC6CCCE, 32, new Coordinate(1480, 284)),
     MIDDLE_DOT_TOP_RIGHT_STATION_INFO(0xD6D6D6, 10, new Coordinate(1533, 18)),
+
+    MINING_DRONE_WORD_MINING_LETTER_i(0xFC444A, 10, new Coordinate(1399, 665)),
+    MINING_DRONE_WORD_RETURNING_LETTER_t(0xFFB845, 10, new Coordinate(1396, 665)),
+    MINING_DRONE_WORD_IDLE_LETTER_I(0x8BBE68, 10, new Coordinate(1381, 663)),
 
     ;
 
@@ -67,6 +79,10 @@ public enum IndicatorColour {
         this.colour = colour;
         this.shadeDeviation = shadeDeviation;
         this.coordinate = coordinate;
+    }
+
+    public Color getAwtColour(){
+       return new Color(this.getColour());
     }
 
     public int getColour() {

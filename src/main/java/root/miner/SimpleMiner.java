@@ -10,8 +10,8 @@ import root.functions.WindowActivate;
 public class SimpleMiner extends Miner {
 
 
-    public SimpleMiner(WindowName windowName, WindowActivate windowActivate, ComparePixels comparePixels, Click click, KeyBoardPress keyBoardPress) {
-        super(windowName, windowActivate, comparePixels, click, Role.MINER, keyBoardPress);
+    public SimpleMiner(WindowName windowName, WindowActivate windowActivate, ComparePixels comparePixels, Click click, KeyBoardPress keyBoardPress, FleetConstants fleetConstants) {
+        super(windowName, windowActivate, comparePixels, click, Role.MINER, keyBoardPress, fleetConstants);
     }
 
     @Override

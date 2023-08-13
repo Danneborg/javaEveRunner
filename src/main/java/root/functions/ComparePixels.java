@@ -3,6 +3,7 @@ package root.functions;
 import root.enums.Constants;
 import root.enums.IndicatorColour;
 import root.indicator.Coordinate;
+import root.indicator.DroneChecks;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -158,8 +159,10 @@ public class ComparePixels {
     }
 
     public boolean isInStation() {
-        return this.comparePixels(IndicatorColour.BLUE_LEFT_TOP_UNDOCK_BUTTON)
-                && this.comparePixels(IndicatorColour.BLUE_RIGHT_BOTTOM_UNDOCK_BUTTON)
+        System.out.println(this.comparePixels(IndicatorColour.MIDDLE_DOT_TOP_RIGHT_STATION_INFO));
+
+        return (this.comparePixels(IndicatorColour.BLUE_LEFT_TOP_UNDOCK_BUTTON_ALFA) || this.comparePixels(IndicatorColour.BLUE_LEFT_TOP_UNDOCK_BUTTON_OMEGA))
+                && (this.comparePixels(IndicatorColour.BLUE_RIGHT_BOTTOM_UNDOCK_BUTTON_ALFA) || this.comparePixels(IndicatorColour.BLUE_RIGHT_BOTTOM_UNDOCK_BUTTON_OMEGA))
                 && this.comparePixels(IndicatorColour.LETTER_U_UNDOCK_WORD)
                 && this.comparePixels(IndicatorColour.LETTER_k_UNDOCK_WORD)
                 && this.comparePixels(IndicatorColour.MIDDLE_DOT_TOP_RIGHT_STATION_INFO)
@@ -185,6 +188,13 @@ public class ComparePixels {
         return this.comparePixels(IndicatorColour.MINING_HOLD_LOCK)
                 && this.comparePixels(IndicatorColour.MINING_HOLD_FIRST_LETTER_i)
                 && this.comparePixels(IndicatorColour.MINING_HOLD_FIRST_LETTER_d)
+                ;
+    }
+
+    public boolean isInventoryOpen() {
+        return this.comparePixels(IndicatorColour.INVENTORY_HOLD_LOCK)
+                && this.comparePixels(IndicatorColour.MINING_HOLD_CROSS_CENTER)
+                && this.comparePixels(IndicatorColour.CONTEXT_MENU_WHITE_MIDDLE_DOT)
                 ;
     }
 
@@ -224,12 +234,57 @@ public class ComparePixels {
         //TODO уточнить количество циклов
         for (int i = 0; i < 200; i++) {
 
-            if(this.comparePixels(indicatorColour)){
+            if (this.comparePixels(indicatorColour)) {
                 return true;
             }
             //TODO Уточнить время ожидания
-            Sleep.sleep(2,4);
+            Sleep.sleep(2, 4);
         }
         return false;
+    }
+
+    //TODO возможно, понадобится отдельная проверка на каждый из статусов
+    public DroneChecks checkDrones() {
+        var dronesIdle = false;
+        var dronesMining = false;
+        var dronesReturning = false;
+
+        var idleLocalYPos = IndicatorColour.MINING_DRONE_WORD_IDLE_LETTER_I.getCoordinate().getPosY();
+        var returningLocalYPos = IndicatorColour.MINING_DRONE_WORD_RETURNING_LETTER_t.getCoordinate().getPosY();
+        var miningLocalYPos = IndicatorColour.MINING_DRONE_WORD_MINING_LETTER_i.getCoordinate().getPosY();
+
+        for (int i = 0; i <= Constants.MINING_DRONE_NUMBER_FOR_COUNT; i++) {
+
+            var idleSample = robot.getPixelColor(IndicatorColour.MINING_DRONE_WORD_IDLE_LETTER_I.getCoordinate().getPosX(), idleLocalYPos);
+            var returningSample = robot.getPixelColor(IndicatorColour.MINING_DRONE_WORD_RETURNING_LETTER_t.getCoordinate().getPosX(), returningLocalYPos);
+            var miningSample = robot.getPixelColor(IndicatorColour.MINING_DRONE_WORD_MINING_LETTER_i.getCoordinate().getPosX(), miningLocalYPos);
+
+
+            if (comparePixels(IndicatorColour.MINING_DRONE_WORD_IDLE_LETTER_I.getAwtColour(), idleSample, IndicatorColour.MINING_DRONE_WORD_IDLE_LETTER_I.getShadeDeviation())) {
+                dronesIdle = true;
+            }
+
+            if (comparePixels(IndicatorColour.MINING_DRONE_WORD_RETURNING_LETTER_t.getAwtColour(), returningSample, IndicatorColour.MINING_DRONE_WORD_RETURNING_LETTER_t.getShadeDeviation())) {
+                dronesReturning = true;
+            }
+
+            if (comparePixels(IndicatorColour.MINING_DRONE_WORD_MINING_LETTER_i.getAwtColour(), miningSample, IndicatorColour.MINING_DRONE_WORD_MINING_LETTER_i.getShadeDeviation())) {
+                dronesMining = true;
+            }
+
+            if(dronesIdle){
+                return new DroneChecks(dronesIdle, false, false, false);
+            }
+
+            if(dronesReturning || dronesMining){
+                return new DroneChecks(false, dronesReturning, dronesMining, false);
+            }
+
+            idleLocalYPos += Constants.MINING_DRONE_WORD_MINING_LETTER_i_Y_BIAS;
+            returningLocalYPos += Constants.MINING_DRONE_WORD_MINING_LETTER_i_Y_BIAS;
+            miningLocalYPos += Constants.MINING_DRONE_WORD_MINING_LETTER_i_Y_BIAS;
+        }
+
+        return new DroneChecks(false, false, false, false);
     }
 }
