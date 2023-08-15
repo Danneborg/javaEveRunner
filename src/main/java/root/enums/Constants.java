@@ -12,9 +12,9 @@ public final class Constants {
     public static final int BOOK_PANEL_Y_AXIS_BIAS = 22;
     //TODO (возможно, нужно будет подкорректировать это значение). Количество пикселей, среди которых может быть отклонение в панели букмарок
     public static final int BOOK_PANEL_Y_AXIS_BIAS_RAND = 10;
-    public static final int BOOK_PANEL_X_AXIS_MIN_BIAS_FOR_LEFT_CLICK = 50;
-    public static final int BOOK_PANEL_X_AXIS_MAX_BIAS_FOR_LEFT_CLICK = 155;
-    public static final int BOOK_PANEL_Y_AXIS_MIN_BIAS_FOR_LEFT_CLICK = 8;
+    public static final int BOOK_PANEL_X_AXIS_MIN_BIAS_FOR_LEFT_CLICK = 55;
+    public static final int BOOK_PANEL_X_AXIS_MAX_BIAS_FOR_LEFT_CLICK = 150;
+    public static final int BOOK_PANEL_Y_AXIS_MIN_BIAS_FOR_LEFT_CLICK = 11;
     public static final int BOOK_PANEL_Y_AXIS_MAX_BIAS_FOR_LEFT_CLICK = 15;
 
     public static final int EXECUMER_MINING_HOLD_SELECT_ALL_X_ASIS_MIN_BIAS = 40;
@@ -40,5 +40,16 @@ public final class Constants {
     public static Rectangle ITEM_HANGAR_DROP = Area.ITEM_HANGAR_DROP.getRectangle();
     public static Rectangle DRONE_HOLD_DRONE_IN_A_BAY_LINE = new Rectangle(new Coordinate(1310, 583), new Coordinate(1400, 591));//место с надписью drone in bay которое можно тянуть за лкм
     public static Rectangle DRONE_HOLD_DRAG_OUT = new Rectangle(new Coordinate(1270, 790), new Coordinate(1540, 870));//свободная часть пространства куда можно перетянуть дронов для запуска
+
+    public static Rectangle ORCA_INVENTORY_FIRST_ROW = new Rectangle(new Coordinate(414, 775), new Coordinate(570, 785));
+    public static Rectangle ORCA_INVENTORY_SECOND_ROW = new Rectangle(new Coordinate(410, 795), new Coordinate(560, 805));
+    public static Rectangle ORCA_INVENTORY_THIRD_ROW = new Rectangle(new Coordinate(420, 815), new Coordinate(570, 825));
+
+    public static final int INVENTORY_INVERT_SELECTION_X_MIN_BIAS = 50;
+    public static final int INVENTORY_INVERT_SELECTION_X_MAX_BIAS = 110;
+    public static final int INVENTORY_INVERT_SELECTION_Y_MIN = 832;
+    public static final int INVENTORY_INVERT_SELECTION_Y_MAX = 842;
+
+
     public static Set<State> ON_BELT_STATES = Set.of(State.ON_BELT, State.ON_BELT_ALIGNING, State.ON_BELT_DRONES_MINING, State.ON_BELT_MINING_STRIP_ACTIVATED);
 }

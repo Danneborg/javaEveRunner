@@ -68,4 +68,16 @@ public class DefineCoordinate {
         return new Coordinate(rnd(XMin, XMax), rnd(YMin, YMax));
     }
 
+    public static Coordinate defineCoordinate(Coordinate topLeft, Coordinate botRight) {
+
+        int XMin = topLeft.getPosX(); // Минимальное число для диапазона
+        int XMax = botRight.getPosX();
+        ; // Максимальное число для диапазона
+
+        int YMin = topLeft.getPosY(); // Минимальное число для диапазона
+        int YMax = botRight.getPosY(); // Максимальное число для диапазона
+
+        return new Coordinate(rnd(XMin, XMax), rnd(YMin, YMax));
+    }
+
 }

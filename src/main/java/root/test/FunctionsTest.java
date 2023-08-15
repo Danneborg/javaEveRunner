@@ -25,7 +25,7 @@ public class FunctionsTest {
         Orca m = new Orca(WindowName.TORWAK_MARTIN, windowActivate, comparePixels, click, keyBoardPress, fleetConstants);
         m.actTest();
 //        windowActivate.activateWindow(WindowName.TORWAK_MARTIN.getTitle());
-//        System.out.println(comparePixels.checkDrones());
+//        System.out.println(comparePixels.isInventoryEmpty());
 //        System.out.println(comparePixels.isInStation());
 //        while (true){
 //            System.out.println(comparePixels.checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_1));

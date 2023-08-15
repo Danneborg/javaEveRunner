@@ -298,7 +298,7 @@ public abstract class Miner implements Mine {
     }
 
     public void printState() {
-        System.out.println("===============================");
+
         System.out.printf("Статус - %s. ", this.getState());
         System.out.printf("isInSpace - %s. ", this.isInSpace());
         System.out.printf("isInInWarp - %s. ", this.isInInWarp());
@@ -311,7 +311,7 @@ public abstract class Miner implements Mine {
         System.out.printf("globalBelt - %s. ", this.getGlobalBelt());
         System.out.printf("execumerMiningHoldFull - %s. ", this.isOreHoldFull());
         System.out.printf("execumerMiningHoldEmpty - %s. ", this.isOreHoldEmpty());
-        System.out.println("===============================");
+
     }
 
     public boolean doOpenFolder(Supplier<Boolean> checker, Supplier<Void> keyPresser, String title) {

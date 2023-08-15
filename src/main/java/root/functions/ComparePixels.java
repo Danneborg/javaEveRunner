@@ -211,6 +211,19 @@ public class ComparePixels {
                 ;
     }
 
+    public boolean isInventoryAlmostFull() {
+        return this.isInventoryOpen()
+                && !this.comparePixels(IndicatorColour.INVENTORY_ALMOST_FULL)
+                ;
+    }
+
+    public boolean isInventoryEmpty() {
+        return this.isInventoryOpen()
+                && this.comparePixels(IndicatorColour.INVENTORY_EMPTY)
+                && !this.comparePixels(IndicatorColour.INVENTORY_THIRD_ROW_LETTER_i)
+                ;
+    }
+
     public boolean isOnBelt() {
         return this.comparePixels(IndicatorColour.FIRST_ROW_ASTEROID_ICON_PIXEL)
                 && this.comparePixels(IndicatorColour.FIRST_ROW_WORD_SIZE_LETTER_m)

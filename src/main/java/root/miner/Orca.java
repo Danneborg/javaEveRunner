@@ -2,11 +2,9 @@ package root.miner;
 
 import lombok.Getter;
 import lombok.Setter;
-import root.enums.Constants;
-import root.enums.Role;
-import root.enums.State;
-import root.enums.WindowName;
+import root.enums.*;
 import root.functions.*;
+import root.indicator.Coordinate;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -23,6 +21,9 @@ public class Orca extends Miner implements Mine {
     private boolean areDronesMining;
     private boolean areDronesReturning;
     private boolean isInventoryOpen;
+    //TODO добавить орке дополнительный таймер или сделать логику, что даже если она спит во время майнинга, то она все равно может проверять есть новые конты и собирать их
+    private boolean isInventoryFull;
+    private boolean isInventoryEmpty;
 
     private List<Miner> minerList = new ArrayList<>();
 
@@ -30,6 +31,13 @@ public class Orca extends Miner implements Mine {
         super(windowName, windowActivate, comparePixels, click, Role.ORCA, keyBoardPress, fleetConstants);
     }
 
+    @Override
+    public void printState(){
+        System.out.println("===============================");
+        super.printState();
+        System.out.printf("%nisInventoryEmpty - %s. ", this.isInventoryEmpty());
+        System.out.println("%n===============================");
+    }
 
     //TODO установить в орку шилдбустер и добавить механизм его активации на белте
     public void actTest() {
@@ -56,8 +64,6 @@ public class Orca extends Miner implements Mine {
                 orcaAct();
                 printState();
             }
-            //TODO все, что выше, это логика для копания, для подъема контов у нас должна быть отдельная логика, которая должна поднимать контейнеры
-            takeContainers();
 
             //TODO добавить опрос всех майнеров на предмет статуса и последующей раздачей команд каждому окну
             for (var singleMiner : minerList) {
@@ -68,9 +74,21 @@ public class Orca extends Miner implements Mine {
 
     }
 
-
     //TODO реализовать
     private void orcaAct() {
+
+        if (getFleetConstants().getAvailableContainers() > 0) {
+            //TODO
+            activateWindow();
+            collectState();
+            takeContainers();
+        }
+
+        //Время копать еще не пришло
+        if (getAwakeMoment() > System.currentTimeMillis()) {
+            return;
+        }
+
         activateWindow();
         collectState();
 
@@ -103,16 +121,27 @@ public class Orca extends Miner implements Mine {
             setOreHoldFull(getComparePixels().isExecumerMinigHoldAlmostFull());
             setOreHoldEmpty(getComparePixels().isExecumerMinigHoldEmpty());
 
-            if (isOreHoldEmpty() && getNumberOfRowsInMiningHold() == 0) {
+            setInventoryFull(getComparePixels().isInventoryAlmostFull());
+            setInventoryEmpty(getComparePixels().isInventoryEmpty());
+
+            if (isOreHoldEmpty() && getNumberOfRowsInMiningHold() == 0 && isInventoryEmpty()) {
                 setState(State.UNDOCKING);
                 doUndock();
                 setSleep(15000L);
                 return;
             }
 
-            if (isOreHoldFull() || !isOreHoldEmpty() || getNumberOfRowsInMiningHold() != 0) {
+            if (isOreHoldFull() || !isOreHoldEmpty() || getNumberOfRowsInMiningHold() != 0 || !isInventoryEmpty()) {
                 setState(State.IN_STATION_UNLOADING);
-                unloadExecumerMinigHold();
+                if (isOreHoldFull() || !isOreHoldEmpty() || getNumberOfRowsInMiningHold() != 0) {
+                    unloadExecumerMinigHold();
+                    if (isInventoryEmpty()) {
+                        return;
+                    }
+                }
+                if (!isInventoryEmpty()) {
+                    unloadInventory();
+                }
                 return;
             }
 
@@ -158,26 +187,14 @@ public class Orca extends Miner implements Mine {
 
             checkAndOpenOreAndItemHolds();
             setOreHoldFull(getComparePixels().isExecumerMinigHoldAlmostFull());
+            setInventoryFull(getComparePixels().isInventoryAlmostFull());
 
             //TODO добавить логику реварпа на другой белт, если общее количество целей для лока меньше 2
 
-            //TODO у орки 2 отсека для руды, нужно добавить проверку на заполненность второго отсека
-            //TODO для орки так же добавить проверку инвентаря на наличие руды и так же выбрасо ее в ангар станции
-            if (isOreHoldFull()) {
-                //TODO УБРАТЬ ПОСЛЕ ТЕСТА, ДРОП КОНТОВ НУЖЕН ТОЛЬКО ДЛЯ ОБЫЧНЫХ ЛОПАТ
-//                jettisonExecumer();
-                Sleep.sleep(200, 300);
+            if (isOreHoldFull() && isInventoryFull()) {
                 returnDrones();
                 //TODO добавить команду варпа на станцию или сброса контейнера, для орки это варп на станцию
             } else {
-
-                if (getFleetConstants().getAvailableContainers() > 0) {
-                    //TODO
-                    takeContainers();
-                }
-
-                //TODO Сначала нужно раздать бонусы, но у Орки это заряды, поэтому нужно лишь 1 раз нажать кнопку и все
-
                 mine();
             }
 
@@ -185,13 +202,43 @@ public class Orca extends Miner implements Mine {
 
     }
 
+    private void unloadInventory(){
+
+        getKeyBoardPress().pressKeyWithoutRelease(KeyEvent.VK_CONTROL);
+        getClick().doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(Constants.ORCA_INVENTORY_FIRST_ROW), DefineCoordinate.rnd(1000,1200));
+        Sleep.sleep(50,100);
+        getClick().doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(Constants.ORCA_INVENTORY_SECOND_ROW), DefineCoordinate.rnd(800,900));
+        Sleep.sleep(50,80);
+        getKeyBoardPress().keyRelease(KeyEvent.VK_CONTROL);
+        var coordinateRMBC = DefineCoordinate.defineCoordinate(Constants.ORCA_INVENTORY_FIRST_ROW);
+        getClick().doClick(MouseButton.RIGHT, coordinateRMBC, DefineCoordinate.rnd(800,900));
+        Sleep.sleep(400,500);
+        int xLmcTop = coordinateRMBC.getPosX() + Constants.INVENTORY_INVERT_SELECTION_X_MIN_BIAS;
+        int xLmcBot = DefineCoordinate.rnd(xLmcTop, xLmcTop + Constants.INVENTORY_INVERT_SELECTION_X_MAX_BIAS);
+
+        var topLeftAngel= new Coordinate(xLmcTop, Constants.INVENTORY_INVERT_SELECTION_Y_MIN);
+        var botRightAngel= new Coordinate(xLmcBot, Constants.INVENTORY_INVERT_SELECTION_Y_MAX);
+
+        getClick().doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(topLeftAngel, botRightAngel), DefineCoordinate.rnd(800,900));
+
+        Sleep.sleep(100,200);
+        getClick().doDragAndDrop(DefineCoordinate.defineCoordinate(Constants.ORCA_INVENTORY_THIRD_ROW), DefineCoordinate.defineCoordinate(Constants.ITEM_HANGAR_DROP), DefineCoordinate.rnd(1400, 1700));
+    }
+
     private void takeContainers() {
         //TODO так же вся логика выполнятся, только если орка на белте, то есть отсекаются все стаутсы, которые не относятся к положению на белте
         //TODO реализовать логику переключения на вкладку с контейнерами и сброса их содержимого в отсеки
         if (isInSpace() && isOnBelt() || Constants.ON_BELT_STATES.contains(getState())) {
 
+            if(!isOreHoldFull()){
 
+            }
 
+            if(!isInventoryFull()){
+
+            }
+
+            //TODO, в конце цикла нужно проверить, что оба отсека еще имею место, если нет, то варпать на станцию
         }
     }
 

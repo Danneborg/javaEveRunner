@@ -37,6 +37,10 @@ public enum IndicatorColour {
     MINING_HOLD_LESS_AROUND_MIDDLE(0x0E0E0E, 10, new Coordinate(502, 530)),//черный пиксель в полоске заполненности руды
     MINING_HOLD_ALMOST_FULL(0x0E0E0E, 10, new Coordinate(657, 530)),//черный пиксель в полоске заполненности руды
 
+    INVENTORY_ALMOST_FULL(0x0E0E0E, 10, new Coordinate(659, 733)),//черный пиксель в полоске заполненности руды в инвентаре орки
+    INVENTORY_EMPTY(0x0E0E0E, 10, new Coordinate(393, 733)),//черный пиксель в полоске заполненности руды в инвентаре орки
+    INVENTORY_THIRD_ROW_LETTER_i(0xC3C3C3, 10, new Coordinate(440, 818)),//белый пиксель в букве i в 3ей строке инвентаря
+
     //TODO подумать, как определить есть ли дроны в космосе
     DRONE_HOLD_LOCK(0xE3E3E3, 10, new Coordinate(1558, 583)),//белый пиксель в икноке замка вкладки дронов
 
