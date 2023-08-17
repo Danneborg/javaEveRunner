@@ -243,6 +243,20 @@ public class ComparePixels {
                 ;
     }
 
+    public boolean isVeldsparTabActive() {
+        return this.comparePixels(IndicatorColour.VELDSPAR_TAB_LETTER_l)
+                && this.comparePixels(IndicatorColour.VELDSPAR_TAB_LETTER_d)
+                &&(this.comparePixels(IndicatorColour.VELDSPAR_TAB_UNDERSCORE_WHITE) || this.comparePixels(IndicatorColour.VELDSPAR_TAB_UNDERSCORE_BLUE))
+                ;
+    }
+
+    public boolean isContainerTabActive() {
+        return this.comparePixels(IndicatorColour.CONTAINER_TAB_LETTER_t)
+                && this.comparePixels(IndicatorColour.CONTAINER_TAB_LETTER_i)
+                &&(this.comparePixels(IndicatorColour.CONTAINER_TAB_UNDERSCORE_WHITE) || this.comparePixels(IndicatorColour.CONTAINER_TAB_UNDERSCORE_BLUE))
+                ;
+    }
+
     public boolean checkStripMinerActive(IndicatorColour indicatorColour) {
         //TODO уточнить количество циклов
         for (int i = 0; i < 200; i++) {
@@ -285,11 +299,11 @@ public class ComparePixels {
                 dronesMining = true;
             }
 
-            if(dronesIdle){
+            if (dronesIdle) {
                 return new DroneChecks(dronesIdle, false, false, false);
             }
 
-            if(dronesReturning || dronesMining){
+            if (dronesReturning || dronesMining) {
                 return new DroneChecks(false, dronesReturning, dronesMining, false);
             }
 

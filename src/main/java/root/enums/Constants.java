@@ -14,8 +14,8 @@ public final class Constants {
     public static final int BOOK_PANEL_Y_AXIS_BIAS_RAND = 10;
     public static final int BOOK_PANEL_X_AXIS_MIN_BIAS_FOR_LEFT_CLICK = 55;
     public static final int BOOK_PANEL_X_AXIS_MAX_BIAS_FOR_LEFT_CLICK = 150;
-    public static final int BOOK_PANEL_Y_AXIS_MIN_BIAS_FOR_LEFT_CLICK = 11;
-    public static final int BOOK_PANEL_Y_AXIS_MAX_BIAS_FOR_LEFT_CLICK = 15;
+    public static final int BOOK_PANEL_Y_AXIS_MIN_BIAS_FOR_LEFT_CLICK = 13;
+    public static final int BOOK_PANEL_Y_AXIS_MAX_BIAS_FOR_LEFT_CLICK = 16;
 
     public static final int EXECUMER_MINING_HOLD_SELECT_ALL_X_ASIS_MIN_BIAS = 40;
     public static final int EXECUMER_MINING_HOLD_SELECT_ALL_X_ASIS_MAX_BIAS = 200;
@@ -49,6 +49,9 @@ public final class Constants {
     public static final int INVENTORY_INVERT_SELECTION_X_MAX_BIAS = 110;
     public static final int INVENTORY_INVERT_SELECTION_Y_MIN = 832;
     public static final int INVENTORY_INVERT_SELECTION_Y_MAX = 842;
+
+    public static Rectangle VELDSPAR_TAB = new Rectangle(new Coordinate(1280, 151), new Coordinate(1313, 160));
+    public static Rectangle CONTAINER_TAB = new Rectangle(new Coordinate(1354, 151), new Coordinate(1390, 160));
 
 
     public static Set<State> ON_BELT_STATES = Set.of(State.ON_BELT, State.ON_BELT_ALIGNING, State.ON_BELT_DRONES_MINING, State.ON_BELT_MINING_STRIP_ACTIVATED);

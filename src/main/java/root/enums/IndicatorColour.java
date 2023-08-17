@@ -55,7 +55,6 @@ public enum IndicatorColour {
     FIRST_ROW_ASTEROID_ICON_PIXEL(0x494949, 10, new Coordinate(1152, 203)),
     FIRST_ROW_WORD_SIZE_LETTER_m(0xE8E8E8, 10, new Coordinate(1473, 204)),
 
-
     //Пиксели в слове Warping
     WARP_DRIVE_WORD_LETTER_NAV_PANEL_W(0xE5E9EB, 10, new Coordinate(1052, 847)),
     WARP_DRIVE_WORD_NAV_PANEL_LETTER_i(0xE3E6E7, 10, new Coordinate(1079, 847)),
@@ -72,6 +71,16 @@ public enum IndicatorColour {
     MINING_DRONE_WORD_MINING_LETTER_i(0xFC444A, 10, new Coordinate(1399, 665)),
     MINING_DRONE_WORD_RETURNING_LETTER_t(0xFFB845, 10, new Coordinate(1396, 665)),
     MINING_DRONE_WORD_IDLE_LETTER_I(0x8BBE68, 10, new Coordinate(1381, 663)),
+
+    VELDSPAR_TAB_LETTER_l(0xE5E5E5, 10, new Coordinate(1288, 147)),
+    VELDSPAR_TAB_LETTER_d(0xE6E6E6, 10, new Coordinate(1295, 147)),
+    VELDSPAR_TAB_UNDERSCORE_WHITE(0xB0B0B0, 10, new Coordinate(1276, 167)),
+    VELDSPAR_TAB_UNDERSCORE_BLUE(0x49C7BF, 10, new Coordinate(1276, 167)),
+
+    CONTAINER_TAB_LETTER_t(0xE7E7E7, 10, new Coordinate(1369, 149)),
+    CONTAINER_TAB_LETTER_i(0xE6E6E6, 10, new Coordinate(1381, 149)),
+    CONTAINER_TAB_UNDERSCORE_WHITE(0xB0B0B0, 10, new Coordinate(1356, 167)),
+    CONTAINER_TAB_UNDERSCORE_BLUE(0x49C7BF, 10, new Coordinate(1356, 167)),
 
     ;
 

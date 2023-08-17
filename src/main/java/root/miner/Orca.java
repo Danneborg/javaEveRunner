@@ -2,6 +2,7 @@ package root.miner;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections4.CollectionUtils;
 import root.enums.*;
 import root.functions.*;
 import root.indicator.Coordinate;
@@ -24,6 +25,8 @@ public class Orca extends Miner implements Mine {
     //TODO добавить орке дополнительный таймер или сделать логику, что даже если она спит во время майнинга, то она все равно может проверять есть новые конты и собирать их
     private boolean isInventoryFull;
     private boolean isInventoryEmpty;
+    private boolean isVeldsparTabActive;
+    private boolean isContainerTabActive;
 
     private List<Miner> minerList = new ArrayList<>();
 
@@ -66,8 +69,10 @@ public class Orca extends Miner implements Mine {
             }
 
             //TODO добавить опрос всех майнеров на предмет статуса и последующей раздачей команд каждому окну
-            for (var singleMiner : minerList) {
-                singleMiner.act();
+            if(CollectionUtils.isNotEmpty(minerList)){
+                for (var singleMiner : minerList) {
+                    singleMiner.act();
+                }
             }
 
         }
@@ -148,8 +153,13 @@ public class Orca extends Miner implements Mine {
         }
 
         setOnBelt(getComparePixels().isOnBelt());
+        setVeldsparTabActive(getComparePixels().isVeldsparTabActive());
 
         if (isInSpace() && !isOnBelt()) {
+
+            if(!isVeldsparTabActive()){
+                getClick().doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(Constants.VELDSPAR_TAB), DefineCoordinate.rnd(1200, 1300));
+            }
 
             setState(State.IN_SPACE);
 
@@ -169,7 +179,7 @@ public class Orca extends Miner implements Mine {
 
         if (isInSpace() && isOnBelt() || Constants.ON_BELT_STATES.contains(getState())) {
 
-            if (!Constants.ON_BELT_STATES.contains(getState())) {
+            if (getState() == null || !Constants.ON_BELT_STATES.contains(getState())) {
                 setState(State.ON_BELT);
             }
 
@@ -195,6 +205,10 @@ public class Orca extends Miner implements Mine {
                 returnDrones();
                 //TODO добавить команду варпа на станцию или сброса контейнера, для орки это варп на станцию
             } else {
+                setVeldsparTabActive(getComparePixels().isVeldsparTabActive());
+                if(!isVeldsparTabActive()){
+                    getClick().doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(Constants.VELDSPAR_TAB), DefineCoordinate.rnd(1200, 1300));
+                }
                 mine();
             }
 
@@ -230,6 +244,12 @@ public class Orca extends Miner implements Mine {
         //TODO реализовать логику переключения на вкладку с контейнерами и сброса их содержимого в отсеки
         if (isInSpace() && isOnBelt() || Constants.ON_BELT_STATES.contains(getState())) {
 
+            setContainerTabActive(getComparePixels().isContainerTabActive());
+            if(!isContainerTabActive()){
+                getClick().doClick(MouseButton.LEFT, DefineCoordinate.defineCoordinate(Constants.CONTAINER_TAB), DefineCoordinate.rnd(1200, 1300));
+            }
+
+
             if(!isOreHoldFull()){
 
             }
@@ -246,6 +266,7 @@ public class Orca extends Miner implements Mine {
     //TODO орке нужно еще поднимать конты своих лопат, подумать как модно организовать майнинг и подбор контейнеров
     @Override
     public void mine() {
+
         setLockedTargets(getComparePixels().numberOfLockedTargetsWithCoordinates());
 
         if (getAvailableTargetsCloser10km() == 0) {
@@ -264,6 +285,7 @@ public class Orca extends Miner implements Mine {
         }
 
         var lockedTargets = getComparePixels().numberOfLockedTargets();
+        //Астероид у орки лочится примерно 12 секунд, она не главная лопата, поэтому, нет смысла ждать, пока она долочит 1ую цель в виде астероида
         if (lockedTargets < 2) {
             lockTarget(getAvailableTargetsCloser10km(), 4 - lockedTargets);
         }
@@ -276,10 +298,16 @@ public class Orca extends Miner implements Mine {
 
         //TODO добавить алгоритм поиска залоченной цели, которая не будет КОНТЕЙНЕРОМ, так как орка еще подбирает конты
         if (!isAreDronesMining() && !isAreDronesReturning()) {
-            getKeyBoardPress().pressKey(KeyEvent.VK_F);
-            setState(State.ON_BELT_DRONES_MINING);
-            //TODO уточнить тайминги пробуждения для копания, для орки можно придумать алгоритм лока целей снизу списка, чтобы не пересекаться с обычными лопатами
-            setSleep(90000L);
+            var currentTargets = getComparePixels().numberOfLockedTargets();
+            if(currentTargets > 0){
+                getKeyBoardPress().pressKey(KeyEvent.VK_F, 3);
+                setState(State.ON_BELT_DRONES_MINING);
+                //TODO уточнить тайминги пробуждения для копания, для орки можно придумать алгоритм лока целей снизу списка, чтобы не пересекаться с обычными лопатами
+                setSleep(90000L);
+            }else {
+                setSleep(15000L);
+            }
+
         }
     }
 

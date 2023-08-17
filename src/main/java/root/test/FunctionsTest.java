@@ -22,15 +22,17 @@ public class FunctionsTest {
         KeyBoardPress keyBoardPress = new KeyBoardPress();
         FleetConstants fleetConstants = new FleetConstants();
 
-        Orca m = new Orca(WindowName.TORWAK_MARTIN, windowActivate, comparePixels, click, keyBoardPress, fleetConstants);
-        m.actTest();
-//        windowActivate.activateWindow(WindowName.TORWAK_MARTIN.getTitle());
+//        Orca m = new Orca(WindowName.TORWAK_MARTIN, windowActivate, comparePixels, click, keyBoardPress, fleetConstants);
+//        m.actTest();
+        windowActivate.activateWindow(WindowName.TORWAK_MARTIN.getTitle());
 //        System.out.println(comparePixels.isInventoryEmpty());
 //        System.out.println(comparePixels.isInStation());
-//        while (true){
-//            System.out.println(comparePixels.checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_1));
-//            System.out.println(comparePixels.checkStripMinerActive(IndicatorColour.GREEN_POINT_MINER_2));
-//        }
+        while (true){
+            System.out.println(comparePixels.isVeldsparTabActive());
+            System.out.println(comparePixels.isContainerTabActive());
+            System.out.println("======================");
+            Sleep.sleep(500,600);
+        }
 //        m.unloadExecumerMinigHold();
 //        warpOnBelt(2, click);
 //        Thread.sleep(500);
